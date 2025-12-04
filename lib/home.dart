@@ -5,6 +5,8 @@ import 'package:yumshare/features/recipe/create_recipe/create_recipe_page.dart';
 class HomePage extends StatelessWidget {
   final PersistentTabController _controller = PersistentTabController(initialIndex: 0);
 
+  HomePage({super.key});
+
   List<Widget> _buildScreens() {
     return [
       PlaceholderPage(title: 'My Recipes'),

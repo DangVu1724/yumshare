@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1038722759810",
+    "project_id": "yumshare-e7299",
+    "storage_bucket": "yumshare-e7299.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1038722759810:android:bf6f3bb69279ae5102489b",
+        "android_client_info": {
+          "package_name": "com.example.yumshare"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCwrtKH3Dq-esyIvQOgjd3NUIHyHcP4r6k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
