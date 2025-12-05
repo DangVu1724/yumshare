@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yumshare/features/recipe/create_recipe/providers/ingredient_provider.dart';
+import 'package:yumshare/features/recipe/create_recipe/controllers/ingredient_provider.dart';
 
 class IngredientItem extends StatelessWidget {
   const IngredientItem({super.key});

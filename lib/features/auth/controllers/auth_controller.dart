@@ -24,7 +24,7 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
       await _authService.signInWithEmail(email: email, password: password);
-      Get.off(() => HomePage());
+      Get.off(() => Home());
     } catch (e) {
       rethrow;
     } finally {

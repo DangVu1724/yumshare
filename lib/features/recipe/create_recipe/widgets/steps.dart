@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yumshare/features/recipe/create_recipe/providers/step_provider.dart';
+import 'package:yumshare/features/recipe/create_recipe/controllers/step_provider.dart';
 
 class StepItem extends StatelessWidget {
   const StepItem({super.key});

@@ -154,7 +154,6 @@ class _RegisterPageState extends State<RegisterPage> {
                       final name = nameController.text.trim();
 
                       _authController.registerWithEmail(name: name, email: email, password: password);
-
                     }
                   },
                   style: ElevatedButton.styleFrom(

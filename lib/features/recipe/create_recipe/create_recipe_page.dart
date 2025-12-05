@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yumshare/features/recipe/create_recipe/providers/ingredient_provider.dart';
-import 'package:yumshare/features/recipe/create_recipe/providers/step_provider.dart';
+import 'package:yumshare/features/recipe/create_recipe/controllers/ingredient_provider.dart';
+import 'package:yumshare/features/recipe/create_recipe/controllers/step_provider.dart';
 import 'package:yumshare/features/recipe/create_recipe/widgets/build_text_field.dart';
+import 'package:yumshare/features/recipe/create_recipe/widgets/category_chip_selector.dart';
 import 'package:yumshare/features/recipe/create_recipe/widgets/image_picker_box.dart';
 import 'package:yumshare/features/recipe/create_recipe/widgets/ingredient_item.dart.dart';
 import 'package:yumshare/features/recipe/create_recipe/widgets/steps.dart';
@@ -74,10 +75,14 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
                   controller: _cookingTimeController,
                 ),
 
+                MultiCategoryChipSelector(),
+
                 Padding(
                   padding: const EdgeInsets.only(top: 16, bottom: 8),
                   child: Text('Ingredients', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                 ),
+
+
               ]),
             ),
           ),

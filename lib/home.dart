@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
+import 'package:yumshare/features/discover/pages/discover_page.dart';
+import 'package:yumshare/features/home/pages/home_page.dart';
 import 'package:yumshare/features/recipe/create_recipe/create_recipe_page.dart';
+import 'package:yumshare/utils/themes/app_colors.dart';
 
-class HomePage extends StatelessWidget {
+class Home extends StatelessWidget {
   final PersistentTabController _controller = PersistentTabController(initialIndex: 0);
 
-  HomePage({super.key});
+  Home({super.key});
 
   List<Widget> _buildScreens() {
     return [
-      PlaceholderPage(title: 'My Recipes'),
-      PlaceholderPage(title: 'Search'),
+      HomePage(),
+      DiscoverPage(),
       CreateRecipePage(),
-      PlaceholderPage(title: 'Community'),
+      PlaceholderPage(title: 'My Recipes'),
       PlaceholderPage(title: 'Profile'),
     ];
   }
@@ -22,18 +25,18 @@ class HomePage extends StatelessWidget {
       // Tab 1: My Recipes
       PersistentBottomNavBarItem(
         icon: Icon(Icons.home, size: 26),
-        inactiveIcon: Icon(Icons.menu_book_outlined, size: 26),
+        inactiveIcon: Icon(Icons.home, size: 26),
         title: "Home",
-        activeColorPrimary: Colors.green[700]!,
+        activeColorPrimary: AppColors.primary,
         inactiveColorPrimary: Colors.grey[600]!,
       ),
 
       // Tab 2: Search
       PersistentBottomNavBarItem(
-        icon: Icon(Icons.search_rounded, size: 26),
+        icon: Icon(Icons.search, size: 26),
         inactiveIcon: Icon(Icons.search_outlined, size: 26),
-        title: "Search",
-        activeColorPrimary: Colors.blue[700]!,
+        title: "Discover",
+        activeColorPrimary: AppColors.primary,
         inactiveColorPrimary: Colors.grey[600]!,
       ),
 
@@ -44,10 +47,10 @@ class HomePage extends StatelessWidget {
           width: 56,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.green[700]!,
+            color: AppColors.primary,
             boxShadow: [
               BoxShadow(
-                color: Colors.green[700]!.withOpacity(0.3),
+                color: AppColors.primary,
                 blurRadius: 8,
                 spreadRadius: 2,
                 offset: Offset(0, 3),
@@ -63,10 +66,10 @@ class HomePage extends StatelessWidget {
 
       // Tab 4: Community
       PersistentBottomNavBarItem(
-        icon: Icon(Icons.people_rounded, size: 26),
+        icon: Icon(Icons.menu_book_outlined, size: 26),
         inactiveIcon: Icon(Icons.menu_book_outlined, size: 26),
         title: "My recipes",
-        activeColorPrimary: Colors.orange[700]!,
+        activeColorPrimary: AppColors.primary,
         inactiveColorPrimary: Colors.grey[600]!,
       ),
 
@@ -75,7 +78,7 @@ class HomePage extends StatelessWidget {
         icon: Icon(Icons.person_rounded, size: 26),
         inactiveIcon: Icon(Icons.person_outline_rounded, size: 26),
         title: "Profile",
-        activeColorPrimary: Colors.purple[700]!,
+        activeColorPrimary: AppColors.primary,
         inactiveColorPrimary: Colors.grey[600]!,
       ),
     ];
@@ -89,8 +92,7 @@ class HomePage extends StatelessWidget {
         controller: _controller,
         screens: _buildScreens(),
         items: _navBarItems(),
-        navBarStyle: NavBarStyle.style15, 
-        backgroundColor: Colors.white,
+        navBarStyle: NavBarStyle.style15,
         navBarHeight: 50,
         handleAndroidBackButtonPress: true,
         stateManagement: true,
@@ -153,7 +155,6 @@ class PlaceholderPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
       body: Center(
         child: Text(
           title,
