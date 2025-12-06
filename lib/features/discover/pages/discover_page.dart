@@ -19,7 +19,6 @@ class _DiscoverPageState extends State<DiscoverPage> {
         child: Padding(
           padding: const EdgeInsetsGeometry.symmetric(vertical: 12, horizontal: 16),
           child: TextButton(onPressed: () {
-            controller.importMeals();
           }, child: Text("Ấn")),
         ),
       ),

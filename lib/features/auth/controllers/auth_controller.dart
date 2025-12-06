@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:yumshare/features/auth/pages/login_page.dart';
 import 'package:yumshare/features/auth/services/auth_service.dart';
 import 'package:yumshare/home.dart';
+import 'package:yumshare/routers/app_routes.dart';
 
 class AuthController extends GetxController {
   final AuthService _authService = AuthService();
@@ -12,7 +13,7 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
       await _authService.registerWithEmail(name: name, email: email, password: password);
-      Get.off(() => const LoginPage());
+      Get.toNamed(Routes.login);
     } catch (e) {
       rethrow;
     } finally {

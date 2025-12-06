@@ -7,12 +7,15 @@ class Users {
   final String email;
   final List<String> myRecipes;
   final List<String> favoriteRecipes;
+  final String? photoUrl;
+
   Users({
     required this.userId,
     required this.name,
     required this.email,
     required this.myRecipes,
     required this.favoriteRecipes,
+    this.photoUrl,
   });
 
   Users copyWith({
@@ -21,6 +24,7 @@ class Users {
     String? email,
     List<String>? myRecipes,
     List<String>? favoriteRecipes,
+    String? photoUrl,
   }) {
     return Users(
       userId: userId ?? this.userId,
@@ -28,6 +32,7 @@ class Users {
       email: email ?? this.email,
       myRecipes: myRecipes ?? this.myRecipes,
       favoriteRecipes: favoriteRecipes ?? this.favoriteRecipes,
+      photoUrl: photoUrl ?? this.photoUrl,
     );
   }
 
@@ -38,6 +43,7 @@ class Users {
       'email': email,
       'myRecipes': myRecipes,
       'favoriteRecipes': favoriteRecipes,
+      'photoUrl': photoUrl,
     };
   }
 
@@ -48,6 +54,7 @@ class Users {
       email: map['email'] ?? '',
       myRecipes: (map['myRecipes'] as List<dynamic>? ?? []).map((e) => e.toString()).toList(),
       favoriteRecipes: (map['favoriteRecipes'] as List<dynamic>? ?? []).map((e) => e.toString()).toList(),
+      photoUrl: map['photoUrl'] ?? '',
     );
   }
 

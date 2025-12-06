@@ -1,12 +1,16 @@
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:uuid/uuid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:yumshare/features/auth/services/auth_service.dart';
 import 'package:yumshare/models/ingredients.dart';
 import 'package:yumshare/models/recipte_step.dart';
 import 'package:yumshare/models/recipes.dart';
 
 class DiscoverController extends GetxController {
   final firestore = FirebaseFirestore.instance;
+
+  var logger = Logger();
 
   // -----------------------------------------
   // 🔥 Convert từ API về Recipe
@@ -60,9 +64,9 @@ class DiscoverController extends GetxController {
   Future<void> saveRecipeToFirebase(Recipe recipe) async {
     try {
       await firestore.collection("recipes").doc(recipe.id).set(recipe.toMap());
-      print("Uploaded: ${recipe.name}");
+      logger.d("Uploaded: ${recipe.name}");
     } catch (e) {
-      print("Firebase error: $e");
+      logger.d("Firebase error: $e");
     }
   }
 
@@ -85,7 +89,7 @@ class DiscoverController extends GetxController {
         }
       }
     } catch (e) {
-      print("Error: $e");
+      logger.d("Error: $e");
     }
   }
 
@@ -96,10 +100,40 @@ class DiscoverController extends GetxController {
     const alphabet = "abcdefghijklmnopqrstuvwxyz";
 
     for (var letter in alphabet.split('')) {
-      print("Fetching: $letter");
+      logger.d("Fetching: $letter");
       await fetchMealsByLetter(letter);
     }
 
-    print("🔥 DONE IMPORT A-Z");
+    logger.d(" DONE IMPORT A-Z");
+  }
+
+  final AuthService _authService = AuthService();
+
+  Future<void> copyRecipesToUserMyRecipes() async {
+    final userId = _authService.currentUser?.uid;
+
+    if (userId == null) return;
+
+    // 1. Lấy tất cả recipe của user
+    final recipeSnapshot = await firestore.collection("recipes").where("authorId", isEqualTo: userId).get();
+
+    // Lấy danh sách ID
+    final recipeIds = recipeSnapshot.docs.map((doc) => doc.id).toList();
+
+    // 2. Lấy user hiện tại
+    final userDoc = firestore.collection("users").doc(userId);
+    final userSnapshot = await userDoc.get();
+
+    if (!userSnapshot.exists) return;
+
+    List<dynamic> currentMyRecipes = userSnapshot.data()?["myRecipes"] ?? [];
+
+    // 3. Gộp ID (không duplicate)
+    final updatedList = {...currentMyRecipes.map((e) => e.toString()), ...recipeIds}.toList();
+
+    // 4. Update user
+    await userDoc.update({"myRecipes": updatedList});
+
+    logger.d("Copied ${recipeIds.length} recipes to user's myRecipes!");
   }
 }

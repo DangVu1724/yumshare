@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:yumshare/features/discover/pages/discover_page.dart';
 import 'package:yumshare/features/home/pages/home_page.dart';
+import 'package:yumshare/features/myrecipe/pages/my_recipe_page.dart';
 import 'package:yumshare/features/recipe/create_recipe/create_recipe_page.dart';
 import 'package:yumshare/utils/themes/app_colors.dart';
 
@@ -15,7 +16,7 @@ class Home extends StatelessWidget {
       HomePage(),
       DiscoverPage(),
       CreateRecipePage(),
-      PlaceholderPage(title: 'My Recipes'),
+      MyRecipePage(),
       PlaceholderPage(title: 'Profile'),
     ];
   }

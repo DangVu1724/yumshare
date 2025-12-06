@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:yumshare/features/auth/controllers/auth_controller.dart';
 import 'package:yumshare/features/auth/pages/login_page.dart';
+import 'package:yumshare/routers/app_routes.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -169,7 +170,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     const Text('Have an account? ', style: TextStyle(color: Colors.grey)),
                     GestureDetector(
                       onTap: () {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginPage()));
+                        Get.toNamed(Routes.login);
                       },
                       child: const Text(
                         'Login',
