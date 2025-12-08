@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:yumshare/features/auth/controllers/auth_controller.dart';
-import 'package:yumshare/features/auth/pages/register_page.dart';
+import 'package:yumshare/home.dart';
 import 'package:yumshare/routers/app_routes.dart';
 
 class LoginPage extends StatefulWidget {
@@ -17,7 +17,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
   bool isPasswordVisible = false;
-  final AuthController _authController = Get.put(AuthController());
+  final AuthController _authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -132,7 +132,10 @@ class _LoginPageState extends State<LoginPage> {
                       final email = emailController.text.trim();
                       final password = passwordController.text.trim();
 
-                      _authController.signInWithEmail(email: email, password: password);
+                      await _authController.signInWithEmail(email: email, password: password);
+                      if (_authController.isLoggedIn.value) {
+                        Get.offAllNamed(Routes.h);
+                      }
                     }
                   },
                   style: ElevatedButton.styleFrom(

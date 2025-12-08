@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sign_in_button/sign_in_button.dart';
 import 'package:yumshare/features/auth/controllers/auth_controller.dart';
-import 'package:yumshare/features/auth/pages/login_page.dart';
 import 'package:yumshare/routers/app_routes.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -18,7 +17,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController nameController = TextEditingController();
   bool isPasswordVisible = false;
-  final AuthController _authController = Get.put(AuthController());
+  final AuthController _authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {

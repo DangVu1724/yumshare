@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:yumshare/features/home/controllers/home_controller.dart';
 import 'package:yumshare/features/profile/controllers/profile_controller.dart';
 import 'package:yumshare/models/recipes.dart';
 import 'package:yumshare/models/users.dart';
+import 'package:yumshare/routers/app_routes.dart';
 import 'package:yumshare/utils/themes/app_colors.dart';
 import 'package:yumshare/utils/themes/text_style.dart';
 import 'package:yumshare/widgets/recipe_card_widget.dart';
 
 class ProfilePage extends StatelessWidget {
   ProfilePage({super.key});
-  final ProfileController _profileController = Get.put(ProfileController());
+  final ProfileController _profileController = Get.find<ProfileController>();
   final HomeController _homeController = Get.find<HomeController>();
 
   @override
@@ -20,7 +23,12 @@ class ProfilePage extends StatelessWidget {
         title: Text('Profile', style: AppTextStyles.heading2),
         actions: [
           IconButton(onPressed: () {}, icon: Icon(Icons.share)),
-          IconButton(onPressed: () {}, icon: Icon(Icons.settings)),
+          IconButton(
+            onPressed: () {
+              Get.toNamed(Routes.setting);
+            },
+            icon: Icon(Icons.settings),
+          ),
         ],
       ),
       body: Obx(() {
@@ -77,10 +85,44 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildAboutTab(user) {
+  Widget _buildAboutTab(Users user) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-      child: Text(user.email ?? "No info yet...", style: TextStyle(fontSize: 16)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Description', style: AppTextStyles.heading3),
+              Text('${user.description}'),
+            ],
+          ),
+          Divider(color: Colors.grey[500]),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Social Media', style: AppTextStyles.heading3),
+              _socialButton(icon: FontAwesomeIcons.facebook, label: 'Facebook', link: user.facebook),
+              const SizedBox(height: 5),
+              _socialButton(icon: FontAwesomeIcons.whatsapp, label: 'WhatsApp', link: user.whatsapp),
+              const SizedBox(height: 5),
+              _socialButton(icon: FontAwesomeIcons.twitter, label: 'Twitter', link: user.twitter),
+            ],
+          ),
+          Divider(color: Colors.grey[500]),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('More Info', style: AppTextStyles.heading3),
+              const SizedBox(height: 7),
+              Row(children: [Icon(Icons.location_on_outlined), const SizedBox(width: 7), Text("${user.address}")]),
+              const SizedBox(height: 10,),
+              Row(children: [Icon(Icons.info), const SizedBox(width: 7), Text("${user.address}")]),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -103,7 +145,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(user) {
+  Widget _buildHeader(Users user) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -121,7 +163,9 @@ class ProfilePage extends StatelessWidget {
           ],
         ),
         OutlinedButton.icon(
-          onPressed: () {},
+          onPressed: () {
+            Get.toNamed(Routes.editProfile);
+          },
           icon: Icon(Icons.edit, color: AppColors.primary),
           label: Text('Edit', style: TextStyle(color: AppColors.primary)),
           style: OutlinedButton.styleFrom(
@@ -133,7 +177,7 @@ class ProfilePage extends StatelessWidget {
     );
   }
 
-  Widget _buildProfileStats(user) {
+  Widget _buildProfileStats(Users user) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16),
       decoration: const BoxDecoration(
@@ -147,9 +191,9 @@ class ProfilePage extends StatelessWidget {
         children: [
           _statItem(user.myRecipes.length, "Recipes"),
           _divider(),
-          _statItem(12, "Followers"),
+          _statItem(user.followers.length, "Followers"),
           _divider(),
-          _statItem(12, "Following"),
+          _statItem(user.following.length, "Following"),
         ],
       ),
     );
@@ -163,6 +207,21 @@ class ProfilePage extends StatelessWidget {
           const SizedBox(height: 4),
           Text(label),
         ],
+      ),
+    );
+  }
+
+  Widget _socialButton({required IconData icon, required String label, required String? link}) {
+    return TextButton.icon(
+      onPressed: () => _profileController.openLink(link),
+      icon: FaIcon(icon, color: AppColors.primary),
+      label: Text(label, style: TextStyle(color: AppColors.primary, fontSize: 16)),
+      style: TextButton.styleFrom(
+        padding: EdgeInsets.zero,
+        minimumSize: Size(0, 32),
+        alignment: Alignment.centerLeft,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+        visualDensity: VisualDensity.compact,
       ),
     );
   }

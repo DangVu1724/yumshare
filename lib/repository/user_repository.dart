@@ -13,4 +13,11 @@ class UserRepository {
     final userDoc = await firestore.collection("users").doc(userId).get();
     return Users.fromMap(userDoc.data() ?? {});
   }
+
+  Future<void> updateUserFields(Map<String, dynamic> fields) async {
+    final uid = _authService.currentUser?.uid;
+    if (uid == null) return;
+
+    await firestore.collection('users').doc(uid).update(fields);
+  }
 }

@@ -13,13 +13,7 @@ class Home extends StatelessWidget {
   Home({super.key});
 
   List<Widget> _buildScreens() {
-    return [
-      HomePage(),
-      DiscoverPage(),
-      CreateRecipePage(),
-      MyRecipePage(),
-      ProfilePage()
-    ];
+    return [HomePage(), DiscoverPage(), CreateRecipePage(), MyRecipePage(), ProfilePage()];
   }
 
   List<PersistentBottomNavBarItem> _navBarItems() {
@@ -50,14 +44,7 @@ class Home extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: AppColors.primary,
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.primary,
-                blurRadius: 8,
-                spreadRadius: 2,
-                offset: Offset(0, 3),
-              ),
-            ],
+            boxShadow: [BoxShadow(color: AppColors.primary, blurRadius: 8, spreadRadius: 2, offset: Offset(0, 3))],
           ),
           child: Icon(Icons.add_rounded, color: Colors.white, size: 30),
         ),
@@ -147,22 +134,4 @@ List<PersistentBottomNavBarItem> _navBarItemsAlternative() {
       textStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
     ),
   ];
-}
-
-// Widget tạm
-class PlaceholderPage extends StatelessWidget {
-  final String title;
-  const PlaceholderPage({super.key, required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text(
-          title,
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.grey[800]),
-        ),
-      ),
-    );
-  }
 }

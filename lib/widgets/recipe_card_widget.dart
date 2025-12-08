@@ -9,11 +9,7 @@ class RecipeCard extends StatelessWidget {
   final Recipe recipe;
   final Users author;
 
-  RecipeCard({
-    super.key,
-    required this.recipe,
-    required this.author,
-  });
+  RecipeCard({super.key, required this.recipe, required this.author});
 
   final HomeController _homeController = Get.find<HomeController>();
 
@@ -51,7 +47,6 @@ class RecipeCard extends StatelessWidget {
                 ),
               ),
             ),
-
             // Nút favorite
             Positioned(
               top: 10,
@@ -62,17 +57,10 @@ class RecipeCard extends StatelessWidget {
                 },
                 child: Container(
                   padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: AppColors.primary,
-                    shape: BoxShape.circle,
-                  ),
+                  decoration: BoxDecoration(color: AppColors.primary, shape: BoxShape.circle),
                   child: Obx(() {
                     final isFav = _homeController.isFavorite(recipe.id);
-                    return Icon(
-                      isFav ? Icons.bookmark : Icons.bookmark_border,
-                      color: Colors.white,
-                      size: 22,
-                    );
+                    return Icon(isFav ? Icons.bookmark : Icons.bookmark_border, color: Colors.white, size: 22);
                   }),
                 ),
               ),
@@ -90,11 +78,7 @@ class RecipeCard extends StatelessWidget {
                     recipe.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 3),
 
@@ -108,21 +92,14 @@ class RecipeCard extends StatelessWidget {
                           shape: BoxShape.circle,
                           border: Border.all(color: Colors.white, width: 2),
                         ),
-                        child: const CircleAvatar(
-                          radius: 28,
-                          backgroundImage: AssetImage("assets/images/avatar1.png"),
-                        ),
+                        child: const CircleAvatar(radius: 28, backgroundImage: AssetImage("assets/images/avatar1.png")),
                       ),
 
                       const SizedBox(width: 5),
 
                       Text(
                         author.name,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),

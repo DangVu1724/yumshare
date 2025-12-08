@@ -8,6 +8,8 @@ class AuthController extends GetxController {
   final AuthService _authService = AuthService();
 
   var isLoading = false.obs;
+  RxBool isLoggedIn = false.obs;
+  RxBool isSignOut = false.obs;
 
   Future<void> registerWithEmail({required String name, required String email, required String password}) async {
     try {
@@ -25,8 +27,9 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
       await _authService.signInWithEmail(email: email, password: password);
-      Get.off(() => Home());
+      isLoggedIn.value = true;
     } catch (e) {
+      isLoggedIn.value = false;
       rethrow;
     } finally {
       isLoading.value = false;
@@ -37,7 +40,10 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
       await _authService.signOut();
+      isSignOut.value = true;
     } catch (e) {
+      isSignOut.value = false;
+
       rethrow;
     } finally {
       isLoading.value = false;

@@ -7,6 +7,13 @@ class Users {
   final String email;
   final List<String> myRecipes;
   final List<String> favoriteRecipes;
+  final List<String> followers;
+  final List<String> following;
+  final String? description;
+  final String? address;
+  final String? facebook;
+  final String? whatsapp;
+  final String? twitter;
   final String? photoUrl;
 
   Users({
@@ -16,6 +23,13 @@ class Users {
     required this.myRecipes,
     required this.favoriteRecipes,
     this.photoUrl,
+    this.followers = const [],
+    this.following = const [],
+    this.address,
+    this.description,
+    this.facebook,
+    this.twitter,
+    this.whatsapp,
   });
 
   Users copyWith({
@@ -24,6 +38,13 @@ class Users {
     String? email,
     List<String>? myRecipes,
     List<String>? favoriteRecipes,
+    List<String>? followers,
+    List<String>? following,
+    String? description,
+    String? address,
+    String? facebook,
+    String? whatsapp,
+    String? twitter,
     String? photoUrl,
   }) {
     return Users(
@@ -32,6 +53,13 @@ class Users {
       email: email ?? this.email,
       myRecipes: myRecipes ?? this.myRecipes,
       favoriteRecipes: favoriteRecipes ?? this.favoriteRecipes,
+      followers: followers ?? this.followers,
+      following: following ?? this.following,
+      description: description ?? this.description,
+      address: address ?? this.address,
+      facebook: facebook ?? this.facebook,
+      whatsapp: whatsapp ?? this.whatsapp,
+      twitter: twitter ?? this.twitter,
       photoUrl: photoUrl ?? this.photoUrl,
     );
   }
@@ -43,6 +71,13 @@ class Users {
       'email': email,
       'myRecipes': myRecipes,
       'favoriteRecipes': favoriteRecipes,
+      'followers': followers,
+      'following': following,
+      'description': description,
+      'address': address,
+      'facebook': facebook,
+      'whatsapp': whatsapp,
+      'twitter': twitter,
       'photoUrl': photoUrl,
     };
   }
@@ -52,9 +87,16 @@ class Users {
       userId: map['userId'] ?? '',
       name: map['name'] ?? '',
       email: map['email'] ?? '',
-      myRecipes: (map['myRecipes'] as List<dynamic>? ?? []).map((e) => e.toString()).toList(),
-      favoriteRecipes: (map['favoriteRecipes'] as List<dynamic>? ?? []).map((e) => e.toString()).toList(),
-      photoUrl: map['photoUrl'] ?? '',
+      myRecipes: (map['myRecipes'] as List<dynamic>? ?? []).cast<String>(),
+      favoriteRecipes: (map['favoriteRecipes'] as List<dynamic>? ?? []).cast<String>(),
+      followers: (map['followers'] as List<dynamic>? ?? []).cast<String>(),
+      following: (map['following'] as List<dynamic>? ?? []).cast<String>(),
+      description: map['description'],
+      address: map['address'],
+      facebook: map['facebook'],
+      whatsapp: map['whatsapp'],
+      twitter: map['twitter'],
+      photoUrl: map['photoUrl'],
     );
   }
 
