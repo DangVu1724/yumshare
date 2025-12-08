@@ -1,6 +1,8 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Users {
   final String userId;
   final String name;
@@ -9,6 +11,7 @@ class Users {
   final List<String> favoriteRecipes;
   final List<String> followers;
   final List<String> following;
+  final DateTime? createdAt;
   final String? description;
   final String? address;
   final String? facebook;
@@ -30,6 +33,7 @@ class Users {
     this.facebook,
     this.twitter,
     this.whatsapp,
+    required this.createdAt,
   });
 
   Users copyWith({
@@ -40,6 +44,7 @@ class Users {
     List<String>? favoriteRecipes,
     List<String>? followers,
     List<String>? following,
+    DateTime? createdAt,
     String? description,
     String? address,
     String? facebook,
@@ -55,6 +60,7 @@ class Users {
       favoriteRecipes: favoriteRecipes ?? this.favoriteRecipes,
       followers: followers ?? this.followers,
       following: following ?? this.following,
+      createdAt: createdAt ?? this.createdAt,
       description: description ?? this.description,
       address: address ?? this.address,
       facebook: facebook ?? this.facebook,
@@ -91,12 +97,14 @@ class Users {
       favoriteRecipes: (map['favoriteRecipes'] as List<dynamic>? ?? []).cast<String>(),
       followers: (map['followers'] as List<dynamic>? ?? []).cast<String>(),
       following: (map['following'] as List<dynamic>? ?? []).cast<String>(),
+
       description: map['description'],
       address: map['address'],
       facebook: map['facebook'],
       whatsapp: map['whatsapp'],
       twitter: map['twitter'],
       photoUrl: map['photoUrl'],
+      createdAt: map['createdAt'] != null ? (map['createdAt'] as Timestamp).toDate() : null,
     );
   }
 

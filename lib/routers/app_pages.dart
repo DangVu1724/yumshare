@@ -1,9 +1,12 @@
 import 'package:get/get.dart';
 import 'package:yumshare/bindings/auth_binding.dart';
+import 'package:yumshare/bindings/discorver_binding.dart';
 import 'package:yumshare/bindings/home_binding.dart';
 import 'package:yumshare/bindings/profile_binding.dart';
 import 'package:yumshare/features/auth/pages/login_page.dart';
 import 'package:yumshare/features/auth/pages/register_page.dart';
+import 'package:yumshare/features/discover/pages/discover_page.dart';
+import 'package:yumshare/features/discover/pages/recipe_category_page.dart';
 import 'package:yumshare/features/home/pages/favourite_page.dart';
 import 'package:yumshare/features/home/pages/home_page.dart';
 import 'package:yumshare/features/myrecipe/pages/my_recipe_page.dart';
@@ -27,8 +30,15 @@ class AppPages {
       page: () => SettingsPage(),
       bindings: [HomeBinding(), ProfileBinding(), AuthBinding()],
     ),
+    GetPage(name: Routes.discover, page: () => DiscoverPage(), bindings: [DiscorverBinding()]),
     GetPage(name: Routes.myRecipe, page: () => const MyRecipePage()),
     GetPage(name: Routes.createRecipe, page: () => const CreateRecipePage()),
-    GetPage(name: Routes.h, page: () => Home(), bindings: [HomeBinding(), ProfileBinding(), AuthBinding()]),
+    GetPage(name: Routes.categoryRecipe, page: () => const RecipeCategoryPage()),
+
+    GetPage(
+      name: Routes.h,
+      page: () => Home(),
+      bindings: [HomeBinding(), ProfileBinding(), AuthBinding(), DiscorverBinding()],
+    ),
   ];
 }

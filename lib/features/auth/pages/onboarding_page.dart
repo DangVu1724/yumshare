@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:yumshare/features/auth/pages/login_page.dart';
-import 'package:yumshare/features/auth/pages/register_page.dart';
 import 'package:yumshare/routers/app_routes.dart';
 
 class OnboardingPage extends StatelessWidget {

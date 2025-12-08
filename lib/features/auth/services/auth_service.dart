@@ -29,6 +29,7 @@ class AuthService {
         userId: user.uid,
         name: name,
         email: email,
+        createdAt: DateTime.now(),
         myRecipes: [],
         favoriteRecipes: [],
       );

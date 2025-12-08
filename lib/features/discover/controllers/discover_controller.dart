@@ -1,20 +1,62 @@
 import 'package:get/get.dart';
+import 'package:yumshare/models/recipes.dart';
+import 'package:yumshare/repository/recipe_repository.dart';
 
 class DiscoverController extends GetxController {
   List<Map<String, String>> categories = [
-    {"name": "Beef", "image": "assets/images/category/beef.png"},
-    {"name": "Chicken", "image": "assets/images/category/chicken.png"},
-    {"name": "Dessert", "image": "assets/images/category/dessert.png"},
-    {"name": "Lamb", "image": "assets/images/category/lamb.png"},
-    {"name": "Miscellaneous", "image": "assets/images/category/miscellaneous.png"},
-    {"name": "Pasta", "image": "assets/images/category/pasta.png"},
-    {"name": "Pork", "image": "assets/images/category/pork.png"},
-    {"name": "Seafood", "image": "assets/images/category/seafood.png"},
-    {"name": "Side", "image": "assets/images/category/side.png"},
-    {"name": "Starter", "image": "assets/images/category/starter.png"},
-    {"name": "Vegan", "image": "assets/images/category/vegan.png"},
-    {"name": "Vegetarian", "image": "assets/images/category/vegetarian.png"},
-    {"name": "Breakfast", "image": "assets/images/category/breakfast.png"},
-    {"name": "Goat", "image": "assets/images/category/goat.png"},
+    {"name": "Beef", "image": "assets/images/category/Beef.jpg"},
+    {"name": "Chicken", "image": "assets/images/category/Chicken.jpg"},
+    {"name": "Dessert", "image": "assets/images/category/Dessert.jpg"},
+    {"name": "Lamb", "image": "assets/images/category/Lamb.jpg"},
+    {"name": "Miscellaneous", "image": "assets/images/category/Miscellaneous.jpg"},
+    {"name": "Pasta", "image": "assets/images/category/Pasta.jpg"},
+    {"name": "Pork", "image": "assets/images/category/Pork.jpg"},
+    {"name": "Seafood", "image": "assets/images/category/Seafood.jpg"},
+    {"name": "Side", "image": "assets/images/category/Side.jpg"},
+    {"name": "Starter", "image": "assets/images/category/Starter.jpg"},
+    {"name": "Vegan", "image": "assets/images/category/Vegan.jpg"},
+    {"name": "Vegetarian", "image": "assets/images/category/Vegetarian.jpg"},
+    {"name": "Breakfast", "image": "assets/images/category/Breakfast.jpg"},
+    {"name": "Goat", "image": "assets/images/category/Goat.jpg"},
   ];
+
+  final RecipeRepository repo = RecipeRepository();
+
+  var allRecipes = <Recipe>[].obs;
+  var categoryRecipes = <String, List<Recipe>>{}.obs;
+  var isLoading = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchAllRecipes();
+  }
+
+  Future<void> fetchAllRecipes() async {
+    try {
+      isLoading.value = true;
+
+      final recipes = await repo.fetchAllRecipes();
+      allRecipes.value = recipes;
+
+      _groupByCategory(recipes);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void _groupByCategory(List<Recipe> recipes) {
+    Map<String, List<Recipe>> map = {};
+
+    for (var recipe in recipes) {
+      map.putIfAbsent(recipe.category, () => []);
+      map[recipe.category]!.add(recipe);
+    }
+
+    categoryRecipes.value = map;
+  }
+
+  int getCategoryCount(String category) {
+    return categoryRecipes[category]?.length ?? 0;
+  }
 }

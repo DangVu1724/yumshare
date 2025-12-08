@@ -7,8 +7,10 @@ class Routes {
   static const profile = '/profile';
   static const editProfile = '/edit-profile';
   static const setting = '/setting';
+  static const discover = '/discover';
   
   static const recipeDetail = '/recipe-detail';
   static const myRecipe = '/my-recipe';
   static const createRecipe = '/create-recipe';
+  static const categoryRecipe = '/category-recipe';
 }

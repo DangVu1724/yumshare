@@ -1,7 +1,5 @@
 import 'package:get/get.dart';
-import 'package:yumshare/features/auth/pages/login_page.dart';
 import 'package:yumshare/features/auth/services/auth_service.dart';
-import 'package:yumshare/home.dart';
 import 'package:yumshare/routers/app_routes.dart';
 
 class AuthController extends GetxController {

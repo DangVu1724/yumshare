@@ -103,7 +103,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             _inputField(usernameController),
 
             _headerText("Description"),
-            _inputField(descriptionController, maxLines: 3),
+            _inputField(descriptionController),
 
             const SizedBox(height: 25),
             const Align(
@@ -166,6 +166,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
     return TextField(
       controller: controller,
       maxLines: maxLines,
+      minLines: 1,
       decoration: const InputDecoration(
         border: UnderlineInputBorder(borderSide: BorderSide(color: Colors.red, width: 1)),
         focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: Colors.red, width: 1.2)),

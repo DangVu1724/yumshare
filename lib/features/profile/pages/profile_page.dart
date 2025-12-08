@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:yumshare/features/home/controllers/home_controller.dart';
 import 'package:yumshare/features/profile/controllers/profile_controller.dart';
 import 'package:yumshare/models/recipes.dart';
@@ -22,7 +21,7 @@ class ProfilePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Profile', style: AppTextStyles.heading2),
         actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.share)),
+          IconButton(onPressed: () {}, icon: FaIcon(FontAwesomeIcons.paperPlane)),
           IconButton(
             onPressed: () {
               Get.toNamed(Routes.setting);
@@ -98,7 +97,11 @@ class ProfilePage extends StatelessWidget {
               Text('${user.description}'),
             ],
           ),
-          Divider(color: Colors.grey[500]),
+          const SizedBox(height: 10),
+
+          Divider(color: Colors.grey[200]),
+          const SizedBox(height: 10),
+
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -110,15 +113,24 @@ class ProfilePage extends StatelessWidget {
               _socialButton(icon: FontAwesomeIcons.twitter, label: 'Twitter', link: user.twitter),
             ],
           ),
-          Divider(color: Colors.grey[500]),
+          const SizedBox(height: 10),
+
+          Divider(color: Colors.grey[200]),
+          const SizedBox(height: 10),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('More Info', style: AppTextStyles.heading3),
               const SizedBox(height: 7),
               Row(children: [Icon(Icons.location_on_outlined), const SizedBox(width: 7), Text("${user.address}")]),
-              const SizedBox(height: 10,),
-              Row(children: [Icon(Icons.info), const SizedBox(width: 7), Text("${user.address}")]),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  Icon(Icons.info_outline_rounded),
+                  const SizedBox(width: 7),
+                  Text("Joined since ${user.createdAt != null ? formatTime(user.createdAt!) : 'N/A'}"),
+                ],
+              ),
             ],
           ),
         ],
@@ -227,4 +239,8 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _divider() => Container(height: 30, width: 1, color: Colors.grey[200]);
+
+  String formatTime(DateTime time) {
+    return "${time.day}, ${time.month} ${time.year}";
+  }
 }
