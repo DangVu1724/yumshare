@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 import 'package:yumshare/features/discover/pages/discover_page.dart';
+import 'package:yumshare/features/home/controllers/home_controller.dart';
 import 'package:yumshare/features/home/pages/home_page.dart';
 import 'package:yumshare/features/myrecipe/pages/my_recipe_page.dart';
 import 'package:yumshare/features/profile/pages/profile_page.dart';
 import 'package:yumshare/features/recipe/create_recipe/create_recipe_page.dart';
 import 'package:yumshare/utils/themes/app_colors.dart';
+import 'package:yumshare/utils/themes/text_style.dart';
 
 class Home extends StatelessWidget {
   final PersistentTabController _controller = PersistentTabController(initialIndex: 0);
@@ -75,17 +79,36 @@ class Home extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: PersistentTabView(
-        context,
-        controller: _controller,
-        screens: _buildScreens(),
-        items: _navBarItems(),
-        navBarStyle: NavBarStyle.style15,
-        navBarHeight: 50,
-        handleAndroidBackButtonPress: true,
-        stateManagement: true,
-      ),
+    return Stack(
+      children: [
+        PersistentTabView(
+          context,
+          controller: _controller,
+          screens: _buildScreens(),
+          items: _navBarItems(),
+          navBarStyle: NavBarStyle.style15,
+          navBarHeight: 50,
+        ),
+
+        /// GLOBAL LOADING
+        Obx(() {
+          final homeController = Get.find<HomeController>();
+          if (homeController.isLoading.value) {
+            return Container(
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(child: Lottie.asset("assets/animations/loading.json", height: 140)),
+                  const SizedBox(height: 10,),
+                  Center(child: Text('Please wait a moment',style: AppTextStyles.heading2.copyWith(color: AppColors.primary),),)
+                ],
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        }),
+      ],
     );
   }
 }

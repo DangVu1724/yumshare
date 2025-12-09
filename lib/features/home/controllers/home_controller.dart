@@ -8,6 +8,7 @@ class HomeController extends GetxController {
 
   RxList<Recipe> myRecipes = <Recipe>[].obs;
   RxList<Recipe> favoriteRecipes = <Recipe>[].obs;
+  RxList<Recipe> publishRecipes = <Recipe>[].obs;
   RxSet<String> favoriteIds = <String>{}.obs;
 
   RxMap<String, Users> authors = <String, Users>{}.obs;
@@ -27,6 +28,7 @@ class HomeController extends GetxController {
     try {
       await loadMyRecipes();
       await loadFavorite();
+      await loadMyRecipesPublish();
     } finally {
       isLoading.value = false;
     }
@@ -34,6 +36,10 @@ class HomeController extends GetxController {
 
   Future<void> loadMyRecipes() async {
     myRecipes.value = await recipeRepository.getMyRecipes();
+  }
+
+  Future<void> loadMyRecipesPublish() async {
+    publishRecipes.value = await recipeRepository.getMyRecipesPublish();
   }
 
   Future<void> loadFavorite() async {
@@ -57,19 +63,16 @@ class HomeController extends GetxController {
       favoriteIds.add(recipeId);
 
       final recipe = await recipeRepository.findRecipeById(recipeId);
-      
+
       if (recipe != null && !favoriteRecipes.contains(recipe)) {
         favoriteRecipes.add(recipe);
       }
-
     } else {
       favoriteIds.remove(recipeId);
 
       favoriteRecipes.removeWhere((r) => r.id == recipeId);
     }
   }
-
-
 
   bool isFavorite(String recipeId) => favoriteIds.contains(recipeId);
 }

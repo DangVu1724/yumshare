@@ -37,6 +37,39 @@ class RecipeRepository {
     return allRecipes;
   }
 
+  Future<List<Recipe>> getMyRecipesPublish() async {
+    final userId = _authService.currentUser?.uid;
+    if (userId == null) return [];
+
+    final userDoc = await firestore.collection("users").doc(userId).get();
+    if (!userDoc.exists) return [];
+
+    final data = userDoc.data()!;
+    final myRecipesIds = List<String>.from(data["myRecipes"] ?? []);
+
+    if (myRecipesIds.isEmpty) return [];
+
+    // Firestore giới hạn whereIn ≤ 10 phần tử → chia nhỏ
+    List<Recipe> allRecipes = [];
+
+    final chunks = <List<String>>[];
+    for (var i = 0; i < myRecipesIds.length; i += 10) {
+      chunks.add(myRecipesIds.sublist(i, i + 10 > myRecipesIds.length ? myRecipesIds.length : i + 10));
+    }
+
+    for (var chunk in chunks) {
+      final snapshot = await firestore
+          .collection("recipes")
+          .where(FieldPath.documentId, whereIn: chunk)
+          .where("isShared", isEqualTo: true) 
+          .get();
+
+      allRecipes.addAll(snapshot.docs.map((doc) => Recipe.fromMap(doc.data())));
+    }
+
+    return allRecipes;
+  }
+
   Future<Map<String, Users>> fetchRecipesAuthors() async {
     final recipes = await getMyRecipes();
     final authorIds = recipes.map((e) => e.authorId).toSet().toList();
@@ -117,5 +150,4 @@ class RecipeRepository {
       return Recipe.fromMap({...data, 'id': doc.id});
     }).toList();
   }
-
 }

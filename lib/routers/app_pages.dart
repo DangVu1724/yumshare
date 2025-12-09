@@ -16,7 +16,10 @@ import 'package:yumshare/features/profile/pages/edit_profile_page.dart';
 import 'package:yumshare/features/profile/pages/profile_page.dart';
 import 'package:yumshare/features/profile/pages/setting_page.dart';
 import 'package:yumshare/features/recipe/create_recipe/create_recipe_page.dart';
+import 'package:yumshare/features/recipe/recipe_detail/pages/recipe_detail.dart';
 import 'package:yumshare/home.dart';
+import 'package:yumshare/models/recipes.dart';
+import 'package:yumshare/models/users.dart';
 import 'app_routes.dart';
 
 class AppPages {
@@ -40,6 +43,18 @@ class AppPages {
       },
       bindings: [HomeBinding(), DiscorverBinding()],
     ),
+    GetPage(
+      name: Routes.recipeDetail,
+      page: () {
+        final args = Get.arguments as Map<String, dynamic>;
+        final recipe = args["recipe"] as Recipe;
+        final user = args["user"] as Users;
+
+        return RecipeDetailPage(recipe: recipe, user: user);
+      },
+      bindings: [HomeBinding(), DiscorverBinding()],
+    ),
+
     GetPage(name: Routes.discover, page: () => DiscoverPage(), bindings: [DiscorverBinding()]),
     GetPage(name: Routes.myRecipe, page: () => const MyRecipePage()),
     GetPage(name: Routes.createRecipe, page: () => const CreateRecipePage()),

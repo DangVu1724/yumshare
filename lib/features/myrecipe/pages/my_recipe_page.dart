@@ -52,7 +52,7 @@ class _MyRecipePageState extends State<MyRecipePage> {
                   children: [
                     Text('Published', style: AppTextStyles.body),
                     const SizedBox(width: 3),
-                    Text("(${_homeController.favoriteRecipes.length})"),
+                    Text("(${_homeController.publishRecipes.length})"),
                   ],
                 ),
               ),
@@ -62,7 +62,7 @@ class _MyRecipePageState extends State<MyRecipePage> {
         body: TabBarView(
           children: [
             _buildListRecipe(_homeController.myRecipes, _homeController.authors),
-            _buildListRecipe(_homeController.favoriteRecipes, _homeController.authors),
+            _buildListRecipe(_homeController.publishRecipes, _homeController.authors),
           ],
         ),
       ),
