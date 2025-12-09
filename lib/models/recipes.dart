@@ -6,9 +6,9 @@ import 'package:yumshare/models/recipte_step.dart';
 class Recipe {
   final String id;
   final String name;
-  final String authorId; // user tạo
-  final String? originalId; // nếu là bản sao, lưu id công thức gốc
-  final bool isShared; // true nếu chia sẻ lên cộng đồng
+  final String authorId;
+  final String? originalId;
+  final bool isShared;
   final List<Ingredients> ingredients;
   final List<RecipeStep> steps;
   final String? imageUrl;
@@ -18,6 +18,9 @@ class Recipe {
   final String category;
   final DateTime updatedAt;
   final DateTime createdAt;
+
+  final double rating;
+  final int ratingCount;
 
   Recipe({
     required this.id,
@@ -29,13 +32,19 @@ class Recipe {
     required this.steps,
     this.imageUrl,
     this.likes = 0,
-    DateTime? createdAt,
+    this.rating = 0.0,
+    this.ratingCount = 0,
     required this.description,
     required this.regions,
     required this.category,
     DateTime? updatedAt,
+    DateTime? createdAt,
   }) : createdAt = createdAt ?? DateTime.now(),
        updatedAt = updatedAt ?? DateTime.now();
+
+  double get popularScore {
+    return (likes * 2) + (rating * ratingCount * 2) + ratingCount;
+  }
 
   Recipe copyWith({
     String? id,
@@ -47,6 +56,8 @@ class Recipe {
     List<RecipeStep>? steps,
     String? imageUrl,
     int? likes,
+    double? rating,
+    int? ratingCount,
     String? description,
     String? regions,
     String? category,
@@ -63,6 +74,8 @@ class Recipe {
       steps: steps ?? this.steps,
       imageUrl: imageUrl ?? this.imageUrl,
       likes: likes ?? this.likes,
+      rating: rating ?? this.rating,
+      ratingCount: ratingCount ?? this.ratingCount,
       description: description ?? this.description,
       regions: regions ?? this.regions,
       category: category ?? this.category,
@@ -82,6 +95,8 @@ class Recipe {
       'steps': steps.map((x) => x.toMap()).toList(),
       'imageUrl': imageUrl,
       'likes': likes,
+      'rating': rating,
+      'ratingCount': ratingCount,
       'description': description,
       'regions': regions,
       'category': category,
@@ -95,23 +110,21 @@ class Recipe {
       id: map['id'] as String,
       name: map['name'] as String,
       authorId: map['authorId'] as String,
-      originalId: map['originalId'] != null ? map['originalId'] as String : null,
+      originalId: map['originalId'],
       isShared: map['isShared'] as bool,
-
       ingredients: (map['ingredients'] as List<dynamic>)
           .map((x) => Ingredients.fromMap(x as Map<String, dynamic>))
           .toList(),
-
       steps: (map['steps'] as List<dynamic>).map((x) => RecipeStep.fromMap(x as Map<String, dynamic>)).toList(),
-
-      imageUrl: map['imageUrl'] != null ? map['imageUrl'] as String : null,
+      imageUrl: map['imageUrl'],
       likes: map['likes'] as int,
+      rating: (map['rating'] ?? 0).toDouble(),
+      ratingCount: map['ratingCount'] ?? 0,
       description: map['description'] as String,
       regions: map['regions'] as String,
       category: map['category'] as String,
-
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt']),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
     );
   }
 

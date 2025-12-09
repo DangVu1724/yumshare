@@ -110,12 +110,12 @@ class RecipeRepository {
   }
 
   Future<List<Recipe>> fetchAllRecipes() async {
-    final snapshot = await firestore.collection('recipes').get();
+    final snapshot = await firestore.collection('recipes').where('isShared', isEqualTo: true).get();
 
     return snapshot.docs.map((doc) {
       final data = doc.data();
-      data['id'] = doc.id;
-      return Recipe.fromMap(data);
+      return Recipe.fromMap({...data, 'id': doc.id});
     }).toList();
   }
+
 }

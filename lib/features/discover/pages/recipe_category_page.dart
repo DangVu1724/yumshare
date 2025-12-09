@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:yumshare/features/discover/controllers/discover_controller.dart';
+import 'package:yumshare/routers/app_routes.dart';
 import 'package:yumshare/utils/themes/text_style.dart';
 
 class RecipeCategoryPage extends StatefulWidget {
@@ -13,6 +14,22 @@ class RecipeCategoryPage extends StatefulWidget {
 
 class _RecipeCategoryPageState extends State<RecipeCategoryPage> {
   final DiscoverController controller = Get.find<DiscoverController>();
+  bool isPrecached = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!isPrecached) {
+      precacheCategories();
+      isPrecached = true; // tránh preload lại khi rebuild
+    }
+  }
+
+  void precacheCategories() {
+    for (var category in controller.categories) {
+      precacheImage(AssetImage(category['image']!), context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,62 +48,64 @@ class _RecipeCategoryPageState extends State<RecipeCategoryPage> {
         ),
         itemCount: controller.categories.length,
         itemBuilder: (context, index) {
-          final item = controller.categories[index];
           final category = controller.categories[index];
           final name = category['name']!;
+          final image = category['image']!;
 
           return SizedBox(
             height: 150,
             width: 200,
             child: Card(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              child: Stack(
-                children: [
-                  Positioned.fill(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        image: DecorationImage(
-                          image: AssetImage(item['image'] ?? '') as ImageProvider,
-                          fit: BoxFit.cover,
+              child: GestureDetector(
+                onTap: () {
+                  Get.toNamed("${Routes.recipesByCategoryPage}?${Routes.category}=$name");
+                },
+                child: Stack(
+                  children: [
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          image: DecorationImage(image: AssetImage(image) as ImageProvider, fit: BoxFit.cover),
                         ),
                       ),
                     ),
-                  ),
-                  Positioned.fill(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.black.withOpacity(0.35),
+                    Positioned.fill(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          color: Colors.black.withOpacity(0.35),
+                        ),
                       ),
                     ),
-                  ),
-                  Positioned(
-                    bottom: 10,
-                    left: 10,
-                    right: 10,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          name,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: 3),
-                        Obx(() {
-                          return Text(
-                            '${controller.getCategoryCount(name)} recipes',
+                    Positioned(
+                      bottom: 10,
+                      left: 10,
+                      right: 10,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            name,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
-                          );
-                        }),
-                      ],
+                          ),
+                          const SizedBox(height: 3),
+                          Obx(() {
+                            return Text(
+                              '${controller.getCategoryCount(name)} recipes',
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                            );
+                          }),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );

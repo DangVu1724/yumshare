@@ -24,6 +24,7 @@ class DiscoverController extends GetxController {
 
   var allRecipes = <Recipe>[].obs;
   var categoryRecipes = <String, List<Recipe>>{}.obs;
+  var newRecipes = <Recipe>[].obs;
   var isLoading = false.obs;
 
   @override
@@ -40,6 +41,7 @@ class DiscoverController extends GetxController {
       allRecipes.value = recipes;
 
       _groupByCategory(recipes);
+      _getNewRecipes(recipes);
     } finally {
       isLoading.value = false;
     }
@@ -54,6 +56,14 @@ class DiscoverController extends GetxController {
     }
 
     categoryRecipes.value = map;
+  }
+
+  void _getNewRecipes(List<Recipe> recipes) {
+    final sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
+    final newRecipe = recipes.where((recipe) {
+      return recipe.createdAt.isAfter(sevenDaysAgo);
+    }).toList();
+    newRecipes.value = newRecipe;
   }
 
   int getCategoryCount(String category) {

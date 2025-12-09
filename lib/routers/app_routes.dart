@@ -13,4 +13,7 @@ class Routes {
   static const myRecipe = '/my-recipe';
   static const createRecipe = '/create-recipe';
   static const categoryRecipe = '/category-recipe';
+  static const recipesByCategoryPage = '/recipe-by-cate';
+  static const category = 'category';
+  static const search = '/search';
 }
