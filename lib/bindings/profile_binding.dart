@@ -4,6 +4,6 @@ import 'package:yumshare/features/profile/controllers/profile_controller.dart';
 class ProfileBinding extends Bindings {
   @override
   void dependencies() {
-    Get.put(ProfileController(), permanent: true);
+    Get.lazyPut(() => ProfileController());
   }
 }

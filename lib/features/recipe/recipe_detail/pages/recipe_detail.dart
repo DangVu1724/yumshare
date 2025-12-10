@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:yumshare/features/discover/controllers/discover_controller.dart';
+import 'package:yumshare/features/home/controllers/home_controller.dart';
 import 'package:yumshare/models/recipes.dart';
 import 'package:yumshare/models/users.dart';
 import 'package:yumshare/utils/themes/app_colors.dart';
+import 'package:yumshare/widgets/custom_toast_widget.dart';
+import 'package:yumshare/widgets/recipe_card_widget.dart';
 
 class RecipeDetailPage extends StatefulWidget {
   final Recipe recipe;
@@ -15,10 +20,21 @@ class RecipeDetailPage extends StatefulWidget {
 }
 
 class _RecipeDetailPageState extends State<RecipeDetailPage> {
+  final DiscoverController discoverController = Get.find<DiscoverController>();
+  final HomeController homeController = Get.find<HomeController>();
   bool isCollapsed = false;
+  List<Recipe> similar = [];
+
+  @override
+  void initState() {
+    super.initState();
+    similar = discoverController.getSimilarRecipes(widget.recipe);
+  }
 
   @override
   Widget build(BuildContext context) {
+    final isOwner = widget.recipe.authorId == discoverController.userId;
+
     return NotificationListener<ScrollNotification>(
       onNotification: (scroll) {
         if (scroll.metrics.pixels > 200 && !isCollapsed) {
@@ -49,10 +65,24 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                 onPressed: () => Navigator.pop(context),
               ),
               actions: [
-                IconButton(
-                  icon: Icon(Icons.bookmark_border, color: isCollapsed ? Colors.black : Colors.white),
-                  onPressed: () {},
-                ),
+                Obx(() {
+                  final isFav = homeController.isFavorite(widget.recipe.id);
+
+                  return IconButton(
+                    icon: Icon(
+                      isFav ? Icons.bookmark : Icons.bookmark_border,
+                      color: isFav ? AppColors.primary : (isCollapsed ? Colors.black : Colors.white),
+                    ),
+                    onPressed: () {
+                      homeController.toggleFavorite(widget.recipe.id);
+                      // CustomToast.show(
+                      //   context,
+                      //   homeController.isFavorite(widget.recipe.id) ? "Added to Bookmark" : "Removed",
+                      // );
+                    },
+                  );
+                }),
+
                 IconButton(
                   icon: FaIcon(FontAwesomeIcons.paperPlane, color: isCollapsed ? Colors.black : Colors.white),
                   onPressed: () {},
@@ -85,8 +115,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                     /// Author
                     Row(
                       children: [
-                        CircleAvatar(radius: 22, backgroundImage: AssetImage("assets/images/avatar1.png")),
-                        const SizedBox(width: 10),
+                        CircleAvatar(radius: 34, backgroundImage: AssetImage("assets/images/avatar1.png")),
+                        const SizedBox(width: 16),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -95,23 +125,35 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                           ],
                         ),
                         Spacer(),
-                        ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primary,
-                            shape: StadiumBorder(),
-                            padding: EdgeInsets.symmetric(horizontal: 22, vertical: 8),
-                          ),
-                          child: Text("Follow"),
-                        ),
+                        isOwner
+                            ? ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  shape: const StadiumBorder(),
+                                  padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+                                ),
+                                child: const Text("Edit", style: TextStyle(color: Colors.white)),
+                              )
+                            : ElevatedButton(
+                                onPressed: () {},
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.primary,
+                                  shape: const StadiumBorder(),
+                                  padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 8),
+                                ),
+                                child: const Text("Follow", style: TextStyle(color: Colors.white)),
+                              ),
                       ],
                     ),
 
                     const SizedBox(height: 16),
 
                     Text(
-                      widget.recipe.description,
-                      style: TextStyle(fontSize: 14, color: Colors.grey[700], height: 1.45),
+                      (widget.recipe.description.trim().isEmpty)
+                          ? "A delicious dish prepared with care. Perfect for gatherings, daily meals, and anyone who enjoys great taste."
+                          : widget.recipe.description,
+                      style: TextStyle(fontSize: 14, color: AppColors.textDark, height: 1.45),
                     ),
 
                     const SizedBox(height: 18),
@@ -120,19 +162,20 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _infoChip(Icons.timer_outlined, "10 mins"),
-                        _infoChip(Icons.restaurant, "1 serving"),
-                        _infoChip(Icons.flag_outlined, widget.recipe.regions),
+                        _infoChip(Icons.timer_outlined, "10 mins", 'cook time'),
+                        _infoChip(Icons.restaurant, "1 serving", 'serves'),
+                        _infoChip(Icons.flag_outlined, widget.recipe.regions, 'origin'),
                       ],
                     ),
 
                     const SizedBox(height: 22),
 
-                    Text("Ingredients:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                    Text("Ingredients:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+
                     /// Ingredients List
                     ListView.builder(
                       shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                      physics: NeverScrollableScrollPhysics(),
                       itemCount: widget.recipe.ingredients.length,
                       itemBuilder: (context, index) {
                         final item = widget.recipe.ingredients[index];
@@ -141,10 +184,11 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                     ),
                     const SizedBox(height: 24),
 
-                    Text("Instructions:", style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
-                    ListView.builder(
+                    Text("Instructions:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                    ListView.separated(
                       shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                      physics: NeverScrollableScrollPhysics(),
+                      separatorBuilder: (_, _) => const SizedBox(height: 12),
                       itemCount: widget.recipe.steps.length,
                       itemBuilder: (context, index) {
                         final item = widget.recipe.steps[index];
@@ -154,20 +198,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
 
                     const SizedBox(height: 16),
 
-                    /// Ảnh step
-                    SizedBox(
-                      height: 100,
-                      child: ListView(
-                        scrollDirection: Axis.horizontal,
-                        children: [
-                          _stepImg("assets/images/step1.png"),
-                          _stepImg("assets/images/step2.png"),
-                          _stepImg("assets/images/step3.png"),
-                        ],
-                      ),
-                    ),
-
-                    const SizedBox(height: 30),
+                    _similarRecipes(similar),
                   ],
                 ),
               ),
@@ -178,15 +209,26 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     );
   }
 
-  Widget _infoChip(IconData icon, String text) {
+  Widget _infoChip(IconData icon, String text, String title) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.grey[100]),
-      child: Row(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: const Color.fromARGB(255, 250, 233, 238),
+      ),
+      child: Column(
         children: [
-          Icon(icon, size: 18, color: AppColors.primary),
-          SizedBox(width: 6),
-          Text(text, style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13)),
+          Row(
+            children: [
+              Icon(icon, size: 18, color: AppColors.primary),
+              SizedBox(width: 6),
+              Text(
+                text,
+                style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w500, fontSize: 13),
+              ),
+            ],
+          ),
+          Text(title, style: TextStyle(fontSize: 11)),
         ],
       ),
     );
@@ -202,7 +244,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
             radius: 14,
             backgroundColor: AppColors.primary.withOpacity(0.15),
             child: Text(
-              "$index",
+              "${index + 1}",
               style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700),
             ),
           ),
@@ -221,10 +263,10 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
       children: [
         CircleAvatar(
           radius: 14,
-          backgroundColor: AppColors.primary,
+          backgroundColor: AppColors.primary.withOpacity(0.15),
           child: Text(
-            "$index",
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
+            "${index + 1}",
+            style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700),
           ),
         ),
         const SizedBox(width: 12),
@@ -233,14 +275,31 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
     );
   }
 
-  Widget _stepImg(String path) {
-    return Container(
-      margin: EdgeInsets.only(right: 10),
-      width: 100,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
-        image: DecorationImage(image: AssetImage(path), fit: BoxFit.cover),
-      ),
+  Widget _similarRecipes(List<Recipe> recipes) {
+    final authors = homeController.authors;
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text('More Recipes Like This', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+            IconButton(onPressed: () {}, icon: Icon(Icons.arrow_forward)),
+          ],
+        ),
+        SizedBox(
+          height: 240,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              final recipe = recipes[index];
+              final author = authors[recipe.authorId]!;
+              return RecipeCard(recipe: recipe, author: author);
+            },
+            separatorBuilder: (_, _) => const SizedBox(width: 12),
+            itemCount: recipes.length,
+          ),
+        ),
+      ],
     );
   }
 }

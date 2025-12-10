@@ -29,7 +29,7 @@ class RecipeSection extends StatelessWidget {
                 final author = authors[recipe.authorId];
                 return RecipeCard(recipe: recipe, author: author!);
               },
-              separatorBuilder: (_, __) => const SizedBox(width: 12),
+              separatorBuilder: (_, _) => const SizedBox(width: 12),
               itemCount: recipes.length,
             );
           }),

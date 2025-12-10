@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:yumshare/models/ingredients.dart';
 import 'package:yumshare/models/recipte_step.dart';
 
@@ -107,25 +108,46 @@ class Recipe {
 
   factory Recipe.fromMap(Map<String, dynamic> map) {
     return Recipe(
-      id: map['id'] as String,
-      name: map['name'] as String,
-      authorId: map['authorId'] as String,
-      originalId: map['originalId'],
-      isShared: map['isShared'] as bool,
-      ingredients: (map['ingredients'] as List<dynamic>)
+      id: map['id'] ?? '',
+      name: map['name'] ?? '',
+      authorId: map['authorId'] ?? '',
+      originalId: map['originalId'], // nullable thì giữ nguyên
+      isShared: map['isShared'] ?? false,
+
+      ingredients: (map['ingredients'] as List<dynamic>? ?? [])
           .map((x) => Ingredients.fromMap(x as Map<String, dynamic>))
           .toList(),
-      steps: (map['steps'] as List<dynamic>).map((x) => RecipeStep.fromMap(x as Map<String, dynamic>)).toList(),
-      imageUrl: map['imageUrl'],
-      likes: map['likes'] as int,
+
+      steps: (map['steps'] as List<dynamic>? ?? []).map((x) => RecipeStep.fromMap(x as Map<String, dynamic>)).toList(),
+
+      imageUrl: map['imageUrl'], 
+
+      likes: (map['likes'] ?? 0) as int,
+
       rating: (map['rating'] ?? 0).toDouble(),
-      ratingCount: map['ratingCount'] ?? 0,
-      description: map['description'] as String,
-      regions: map['regions'] as String,
-      category: map['category'] as String,
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt']),
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt']),
+      ratingCount: (map['ratingCount'] ?? 0) as int,
+
+      description: map['description'] ?? '',
+      regions: map['regions'] ?? '',
+      category: map['category'] ?? '',
+
+      updatedAt: _parseDate(map['updatedAt']),
+      createdAt: _parseDate(map['createdAt']),
     );
+  }
+
+  static DateTime _parseDate(dynamic value) {
+    if (value == null) return DateTime.now();
+
+    if (value is int) {
+      return DateTime.fromMillisecondsSinceEpoch(value);
+    }
+
+    if (value is Timestamp) {
+      return value.toDate();
+    }
+
+    return DateTime.now();
   }
 
   String toJson() => json.encode(toMap());

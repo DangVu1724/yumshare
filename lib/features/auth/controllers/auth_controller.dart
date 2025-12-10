@@ -1,5 +1,9 @@
 import 'package:get/get.dart';
 import 'package:yumshare/features/auth/services/auth_service.dart';
+import 'package:yumshare/features/discover/controllers/discover_controller.dart';
+import 'package:yumshare/features/discover/controllers/search_controller.dart';
+import 'package:yumshare/features/home/controllers/home_controller.dart';
+import 'package:yumshare/features/profile/controllers/profile_controller.dart';
 import 'package:yumshare/routers/app_routes.dart';
 
 class AuthController extends GetxController {
@@ -38,6 +42,11 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
       await _authService.signOut();
+      Get.delete<DiscoverController>();
+      Get.delete<DiscoverSearchController>();
+      Get.delete<HomeController>();
+      Get.delete<ProfileController>();
+      Get.delete<AuthController>();
       isSignOut.value = true;
     } catch (e) {
       isSignOut.value = false;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
+import 'package:yumshare/features/discover/controllers/discover_controller.dart';
 import 'package:yumshare/features/discover/pages/discover_page.dart';
 import 'package:yumshare/features/home/controllers/home_controller.dart';
 import 'package:yumshare/features/home/pages/home_page.dart';
@@ -93,15 +94,23 @@ class Home extends StatelessWidget {
         /// GLOBAL LOADING
         Obx(() {
           final homeController = Get.find<HomeController>();
-          if (homeController.isLoading.value) {
+          final discoverController = Get.find<DiscoverController>();
+          if (homeController.isLoading.value ||
+              homeController.isAuthorLoading.value ||
+              discoverController.isLoading.value) {
             return Container(
               color: Colors.white,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Center(child: Lottie.asset("assets/animations/loading.json", height: 140)),
-                  const SizedBox(height: 10,),
-                  Center(child: Text('Please wait a moment',style: AppTextStyles.heading2.copyWith(color: AppColors.primary),),)
+                  const SizedBox(height: 10),
+                  Center(
+                    child: Text(
+                      'Please wait a moment',
+                      style: AppTextStyles.heading2.copyWith(color: AppColors.primary),
+                    ),
+                  ),
                 ],
               ),
             );

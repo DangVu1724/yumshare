@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:yumshare/features/auth/services/auth_service.dart';
 import 'package:yumshare/models/recipes.dart';
 import 'package:yumshare/repository/recipe_repository.dart';
 
@@ -21,15 +22,18 @@ class DiscoverController extends GetxController {
   ];
 
   final RecipeRepository repo = RecipeRepository();
+  final AuthService _authService = AuthService();
 
   var allRecipes = <Recipe>[].obs;
   var categoryRecipes = <String, List<Recipe>>{}.obs;
   var newRecipes = <Recipe>[].obs;
   var isLoading = false.obs;
+  late final String? userId;
 
   @override
   void onInit() {
     super.onInit();
+    userId = _authService.currentUser?.uid;
     fetchAllRecipes();
   }
 
@@ -68,5 +72,35 @@ class DiscoverController extends GetxController {
 
   int getCategoryCount(String category) {
     return categoryRecipes[category]?.length ?? 0;
+  }
+
+  List<Recipe> getSimilarRecipes(Recipe targetRecipe, {int limit = 10}) {
+    final sameCategoryList = categoryRecipes[targetRecipe.category] ?? [];
+
+    if (sameCategoryList.isEmpty) return [];
+
+    final similarities = <Recipe, int>{};
+
+    for (var recipe in sameCategoryList) {
+      if (recipe.id == targetRecipe.id) continue;
+
+      int score = 0;
+
+      // 1. Category giống -> ưu tiên cao nhất (đã lọc trước, nhưng vẫn giữ weight)
+      score += 70;
+
+      // 2. Region giống (nếu có dữ liệu)
+      if (targetRecipe.regions.isNotEmpty && recipe.regions == targetRecipe.regions) {
+        score += 25;
+      }
+
+      // score += ((recipe.rating) * 1).toInt();
+
+      similarities[recipe] = score;
+    }
+
+    final sorted = similarities.entries.toList()..sort((a, b) => b.value.compareTo(a.value));
+
+    return sorted.map((e) => e.key).take(limit).toList();
   }
 }

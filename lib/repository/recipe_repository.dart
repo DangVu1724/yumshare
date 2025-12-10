@@ -7,6 +7,10 @@ class RecipeRepository {
   final firestore = FirebaseFirestore.instance;
   final AuthService _authService = AuthService();
 
+  Future<void> updateRecipe(Recipe recipe) async {
+    await firestore.collection("recipes").doc(recipe.id).update(recipe.toMap());
+  }
+
   Future<List<Recipe>> getMyRecipes() async {
     final userId = _authService.currentUser?.uid;
     if (userId == null) return [];
@@ -61,7 +65,7 @@ class RecipeRepository {
       final snapshot = await firestore
           .collection("recipes")
           .where(FieldPath.documentId, whereIn: chunk)
-          .where("isShared", isEqualTo: true) 
+          .where("isShared", isEqualTo: true)
           .get();
 
       allRecipes.addAll(snapshot.docs.map((doc) => Recipe.fromMap(doc.data())));
@@ -71,9 +75,11 @@ class RecipeRepository {
   }
 
   Future<Map<String, Users>> fetchRecipesAuthors() async {
-    final recipes = await getMyRecipes();
+    final recipes = await fetchAllRecipes();
     final authorIds = recipes.map((e) => e.authorId).toSet().toList();
     if (authorIds.isEmpty) return {};
+
+    print("${authorIds}");
 
     final userSnapshot = await firestore.collection("users").where(FieldPath.documentId, whereIn: authorIds).get();
 

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:lottie/lottie.dart';
 import 'package:yumshare/features/home/controllers/home_controller.dart';
 import 'package:yumshare/features/home/widgets/recipe_section.dart';
 import 'package:yumshare/routers/app_routes.dart';
@@ -54,24 +55,58 @@ class _HomePageState extends State<HomePage> {
                   return const Center(child: CircularProgressIndicator());
                 }
 
-                return Column(
-                  children: [
-                    RecipeSection(
-                      title: "Popular Recipes",
-                      recipes: _homeController.myRecipes,
-                      authors: _homeController.authors,
+                // Kiểm tra xem tất cả danh sách có rỗng không
+                final hasAnyData = _homeController.myRecipes.isNotEmpty || _homeController.favoriteRecipes.isNotEmpty;
+
+                if (!hasAnyData) {
+                  // Nếu tất cả rỗng → hiển thị empty state chung
+                  return SizedBox(
+                    height: 240,
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Lottie.asset("assets/animations/loading.json", height: 150),
+                          const SizedBox(height: 10),
+                          Text(
+                            'No recipes available yet.',
+                            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.grey),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
                     ),
+                  );
+                }
+
+                // Chỉ hiển thị section nào có dữ liệu
+                final List<Widget> sections = [];
+
+                if (_homeController.myRecipes.isNotEmpty) {
+                  sections.add(
                     RecipeSection(
                       title: "My Recipes",
                       recipes: _homeController.myRecipes,
                       authors: _homeController.authors,
                     ),
+                  );
+                }
+
+                if (_homeController.favoriteRecipes.isNotEmpty) {
+                  sections.add(
                     RecipeSection(
                       title: "Bookmark Recipes",
                       recipes: _homeController.favoriteRecipes,
                       authors: _homeController.authors,
                     ),
-                  ],
+                  );
+                }
+
+                // Thêm khoảng cách giữa các section
+                return Column(
+                  children: sections
+                      .map((section) => Padding(padding: const EdgeInsets.only(bottom: 20), child: section))
+                      .toList(),
                 );
               }),
             ],
