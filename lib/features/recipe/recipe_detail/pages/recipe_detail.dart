@@ -6,7 +6,6 @@ import 'package:yumshare/features/home/controllers/home_controller.dart';
 import 'package:yumshare/models/recipes.dart';
 import 'package:yumshare/models/users.dart';
 import 'package:yumshare/utils/themes/app_colors.dart';
-import 'package:yumshare/widgets/custom_toast_widget.dart';
 import 'package:yumshare/widgets/recipe_card_widget.dart';
 
 class RecipeDetailPage extends StatefulWidget {

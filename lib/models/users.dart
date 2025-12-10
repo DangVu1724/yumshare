@@ -18,6 +18,7 @@ class Users {
   final String? whatsapp;
   final String? twitter;
   final String? photoUrl;
+  final int publishedRecipesCount;
 
   Users({
     required this.userId,
@@ -34,6 +35,7 @@ class Users {
     this.twitter,
     this.whatsapp,
     required this.createdAt,
+    this.publishedRecipesCount = 0,
   });
 
   Users copyWith({
@@ -51,6 +53,7 @@ class Users {
     String? whatsapp,
     String? twitter,
     String? photoUrl,
+    int? publishedRecipesCount,
   }) {
     return Users(
       userId: userId ?? this.userId,
@@ -67,6 +70,7 @@ class Users {
       whatsapp: whatsapp ?? this.whatsapp,
       twitter: twitter ?? this.twitter,
       photoUrl: photoUrl ?? this.photoUrl,
+      publishedRecipesCount: publishedRecipesCount ?? this.publishedRecipesCount,
     );
   }
 
@@ -85,6 +89,8 @@ class Users {
       'whatsapp': whatsapp,
       'twitter': twitter,
       'photoUrl': photoUrl,
+      'createdAt': createdAt,
+      'publishedRecipesCount': publishedRecipesCount,
     };
   }
 
@@ -97,7 +103,6 @@ class Users {
       favoriteRecipes: (map['favoriteRecipes'] as List<dynamic>? ?? []).cast<String>(),
       followers: (map['followers'] as List<dynamic>? ?? []).cast<String>(),
       following: (map['following'] as List<dynamic>? ?? []).cast<String>(),
-
       description: map['description'],
       address: map['address'],
       facebook: map['facebook'],
@@ -105,6 +110,7 @@ class Users {
       twitter: map['twitter'],
       photoUrl: map['photoUrl'],
       createdAt: map['createdAt'] != null ? (map['createdAt'] as Timestamp).toDate() : null,
+      publishedRecipesCount: (map['publishedRecipesCount'] ?? 0) as int,
     );
   }
 

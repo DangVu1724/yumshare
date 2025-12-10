@@ -28,7 +28,6 @@ class HomeController extends GetxController {
     try {
       await loadMyRecipes();
       await loadFavorite();
-      await loadMyRecipesPublish();
     } finally {
       isLoading.value = false;
     }
@@ -36,10 +35,7 @@ class HomeController extends GetxController {
 
   Future<void> loadMyRecipes() async {
     myRecipes.value = await recipeRepository.getMyRecipes();
-  }
-
-  Future<void> loadMyRecipesPublish() async {
-    publishRecipes.value = await recipeRepository.getMyRecipesPublish();
+    publishRecipes.value = myRecipes.where((r) => r.isShared == true).toList();
   }
 
   Future<void> loadFavorite() async {

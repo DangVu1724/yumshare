@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:logger/logger.dart';
 import 'package:yumshare/features/auth/services/auth_service.dart';
 import 'package:yumshare/models/users.dart';
 
 class UserRepository {
   final firestore = FirebaseFirestore.instance;
   final _authService = AuthService();
+  var logger = Logger();
 
   Future<Users> fetchUserData() async {
     final userId = _authService.currentUser?.uid;
@@ -19,5 +21,22 @@ class UserRepository {
     if (uid == null) return;
 
     await firestore.collection('users').doc(uid).update(fields);
+  }
+
+  Future<List<Users>> fetchTopUsers({int minRecipes = 10}) async {
+    try {
+      final snapshot = await firestore
+          .collection("users")
+          .where("publishedRecipesCount", isGreaterThanOrEqualTo: minRecipes)
+          .get();
+
+      final topUsers = snapshot.docs.map((doc) => Users.fromMap(doc.data())).toList()
+        ..sort((a, b) => b.publishedRecipesCount.compareTo(a.publishedRecipesCount));
+
+      return topUsers;
+    } catch (e) {
+      logger.d("Error fetching top users: $e");
+      return [];
+    }
   }
 }

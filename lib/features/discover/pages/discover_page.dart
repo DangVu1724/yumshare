@@ -55,7 +55,10 @@ class _DiscoverPageState extends State<DiscoverPage> {
                     children: [
                       Icon(Icons.search, color: Colors.grey.shade600),
                       const SizedBox(width: 10),
-                      Text("Search for the recipe or Chef", style: AppTextStyles.body.copyWith(color: Colors.grey.shade600)),
+                      Text(
+                        "Search for the recipe or Chef",
+                        style: AppTextStyles.body.copyWith(color: Colors.grey.shade600),
+                      ),
                     ],
                   ),
                 ),
@@ -65,6 +68,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
               _buildSectionCategory(controller),
               // _buildTitleSection('Our Recommendations'),
               // _buildTitleSection('Most Searches'),
+              _buildTitleSection('Top Chefs', ''),
+              _buildSectionTopChefs(controller),
               _buildTitleSection('New Recipes', ''),
               _buildSectionNewRecipes(controller),
             ],
@@ -122,6 +127,68 @@ Widget _buildSectionNewRecipes(DiscoverController controller) {
         final recipe = recipes[index];
         final author = authors[recipe.authorId]!;
         return RecipeCard(recipe: recipe, author: author);
+      },
+    ),
+  );
+}
+
+Widget _buildSectionTopChefs(DiscoverController controller) {
+  return SizedBox(
+    height: 200,
+    child: ListView.separated(
+      scrollDirection: Axis.horizontal,
+      itemCount: controller.topChefs.length,
+      separatorBuilder: (_, _) => const SizedBox(width: 12),
+      itemBuilder: (context, index) {
+        final chefs = controller.topChefs;
+        final chef = chefs[index];
+        return SizedBox(
+          height: 180,
+          width: 140,
+
+          child: GestureDetector(
+            onTap: () {},
+            child: Card(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              child: Stack(
+                clipBehavior: Clip.hardEdge,
+                children: [
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        image: DecorationImage(image: AssetImage('assets/images/avatar1.png'), fit: BoxFit.cover),
+                      ),
+                    ),
+                  ),
+
+                  // Lớp mờ đen
+                  Positioned.fill(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12),
+                        color: Colors.black.withOpacity(0.35),
+                      ),
+                    ),
+                  ),
+
+                  Positioned(
+                    bottom: 10,
+                    left: 10,
+                    right: 10,
+                    child: Text(
+                      chef.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold,),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
       },
     ),
   );

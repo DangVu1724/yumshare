@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
 import 'package:yumshare/features/auth/services/auth_service.dart';
 import 'package:yumshare/models/recipes.dart';
+import 'package:yumshare/models/users.dart';
 import 'package:yumshare/repository/recipe_repository.dart';
+import 'package:yumshare/repository/user_repository.dart';
 
 class DiscoverController extends GetxController {
   List<Map<String, String>> categories = [
@@ -23,10 +25,12 @@ class DiscoverController extends GetxController {
 
   final RecipeRepository repo = RecipeRepository();
   final AuthService _authService = AuthService();
+  final UserRepository userRepository = UserRepository();
 
   var allRecipes = <Recipe>[].obs;
   var categoryRecipes = <String, List<Recipe>>{}.obs;
   var newRecipes = <Recipe>[].obs;
+  var topChefs = <Users>[].obs;
   var isLoading = false.obs;
   late final String? userId;
 
@@ -35,6 +39,7 @@ class DiscoverController extends GetxController {
     super.onInit();
     userId = _authService.currentUser?.uid;
     fetchAllRecipes();
+    fetchTopUsers();
   }
 
   Future<void> fetchAllRecipes() async {
@@ -49,6 +54,10 @@ class DiscoverController extends GetxController {
     } finally {
       isLoading.value = false;
     }
+  }
+
+  Future<void> fetchTopUsers({int minRecipes = 10}) async {
+    topChefs.value = await userRepository.fetchTopUsers();
   }
 
   void _groupByCategory(List<Recipe> recipes) {
