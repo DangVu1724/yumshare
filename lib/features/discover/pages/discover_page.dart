@@ -147,7 +147,9 @@ Widget _buildSectionTopChefs(DiscoverController controller) {
           width: 140,
 
           child: GestureDetector(
-            onTap: () {},
+            onTap: () {
+              Get.toNamed(Routes.profilechefPage, arguments: chef);
+            },
             child: Card(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               child: Stack(
@@ -181,7 +183,7 @@ Widget _buildSectionTopChefs(DiscoverController controller) {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold,),
+                      style: const TextStyle(fontSize: 16, color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
                 ],

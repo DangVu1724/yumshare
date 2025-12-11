@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:yumshare/features/home/controllers/home_controller.dart';
+import 'package:yumshare/features/profile/controllers/chef_controller.dart';
 import 'package:yumshare/features/profile/controllers/profile_controller.dart';
 import 'package:yumshare/models/recipes.dart';
 import 'package:yumshare/models/users.dart';
@@ -9,17 +10,32 @@ import 'package:yumshare/routers/app_routes.dart';
 import 'package:yumshare/utils/themes/app_colors.dart';
 import 'package:yumshare/utils/themes/text_style.dart';
 import 'package:yumshare/widgets/recipe_card_widget.dart';
+import 'package:yumshare/widgets/shimmer_card_widget.dart';
 
-class ProfilePage extends StatelessWidget {
-  ProfilePage({super.key});
+class ProfileChefPage extends StatefulWidget {
+  final Users chef;
+  const ProfileChefPage({required this.chef, super.key});
+
+  @override
+  State<ProfileChefPage> createState() => _ProfileChefPageState();
+}
+
+class _ProfileChefPageState extends State<ProfileChefPage> {
   final ProfileController _profileController = Get.find<ProfileController>();
   final HomeController _homeController = Get.find<HomeController>();
+  final ChefProfileController _chefController = Get.put(ChefProfileController());
+
+  @override
+  void initState() {
+    _chefController.loadChefRecipes(widget.chef.myRecipes);
+    _chefController.checkIfFollowing(widget.chef.userId);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Profile', style: AppTextStyles.heading2),
         actions: [
           IconButton(onPressed: () {}, icon: FaIcon(FontAwesomeIcons.paperPlane)),
           IconButton(
@@ -35,12 +51,9 @@ class ProfilePage extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        final user = _profileController.userData.value;
-        final recipes = _homeController.myRecipes;
+        final user = widget.chef;
+        final recipes = _chefController.chefRecipes;
         final authors = _homeController.authors;
-        if (user == null) {
-          return const Center(child: Text("No User Data"));
-        }
 
         return DefaultTabController(
           length: 2,
@@ -49,7 +62,13 @@ class ProfilePage extends StatelessWidget {
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  child: Column(children: [_buildHeader(user), const SizedBox(height: 20), _buildProfileStats()]),
+                  child: Column(
+                    children: [
+                      _buildHeader(user, _chefController,_profileController),
+                      const SizedBox(height: 20),
+                      _buildProfileStats(user),
+                    ],
+                  ),
                 ),
               ),
               SliverAppBar(
@@ -139,6 +158,21 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildRecipeTab(List<Recipe> recipes, Map<String, Users> authors) {
+    if (_chefController.isLoading.value) {
+      return GridView.builder(
+        padding: const EdgeInsets.all(12),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          childAspectRatio: 0.75,
+          crossAxisSpacing: 12,
+          mainAxisSpacing: 12,
+        ),
+        itemCount: 6,
+        itemBuilder: (context, index) => const ShimmerCard(),
+      );
+    }
+
+    // dữ liệu xong
     return GridView.builder(
       padding: const EdgeInsets.all(12),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
@@ -147,17 +181,18 @@ class ProfilePage extends StatelessWidget {
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
       ),
+      itemCount: recipes.length,
       itemBuilder: (context, index) {
         final recipe = recipes[index];
         final author = authors[recipe.authorId];
         return RecipeCard(recipe: recipe, author: author!);
       },
-
-      itemCount: recipes.length,
     );
   }
 
-  Widget _buildHeader(Users user) {
+  Widget _buildHeader(Users user, ChefProfileController controller, ProfileController profileController) {
+    final isOwner = widget.chef.userId == _chefController.userId;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -174,26 +209,35 @@ class ProfilePage extends StatelessWidget {
             ),
           ],
         ),
-        OutlinedButton.icon(
-          onPressed: () {
-            Get.toNamed(Routes.editProfile);
-          },
-          icon: Icon(Icons.edit, color: AppColors.primary),
-          label: Text('Edit', style: TextStyle(color: AppColors.primary)),
-          style: OutlinedButton.styleFrom(
-            side: BorderSide(color: AppColors.primary, width: 2),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-          ),
-        ),
+        Obx(() {
+          final isFollowing = controller.isFollowing.value;
+
+          return isOwner
+              ? const SizedBox.shrink()
+              : OutlinedButton(
+                  onPressed: () async {
+                    await controller.toggleFollow(widget.chef.userId);
+                    await profileController.fetchUserData();
+                  },
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: isFollowing ? Colors.grey[400]! : AppColors.primary, width: 2),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  ),
+                  child: Text(
+                    isFollowing ? 'Following' : 'Follow',
+                    style: TextStyle(
+                      color: isFollowing ? Colors.grey[700] : AppColors.primary,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                );
+        }),
       ],
     );
   }
 
-  Widget _buildProfileStats() {
-  return Obx(() {
-    final user = _profileController.userData.value;
-    if (user == null) return SizedBox();
-
+  Widget _buildProfileStats(Users user) {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16),
       decoration: const BoxDecoration(
@@ -213,9 +257,7 @@ class ProfilePage extends StatelessWidget {
         ],
       ),
     );
-  });
-}
-
+  }
 
   Widget _statItem(int number, String label) {
     return Expanded(

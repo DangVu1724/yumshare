@@ -41,12 +41,27 @@ class RecipeRepository {
     return allRecipes;
   }
 
+  Future<List<Recipe>> getChefRecipeData(List<String> recipeId) async {
+    if (recipeId.isEmpty) return [];
+    List<Recipe> chefRecipe = [];
+    final chunks = <List<String>>[];
+    for (var i = 0; i < recipeId.length; i += 10) {
+      chunks.add(recipeId.sublist(i, i + 10 > recipeId.length ? recipeId.length : i + 10));
+    }
+
+    for (var chunk in chunks) {
+      final snapshot = await firestore.collection("recipes").where(FieldPath.documentId, whereIn: chunk).get();
+
+      chefRecipe.addAll(snapshot.docs.map((doc) => Recipe.fromMap(doc.data())));
+    }
+
+    return chefRecipe;
+  }
+
   Future<Map<String, Users>> fetchRecipesAuthors() async {
     final recipes = await fetchAllRecipes();
     final authorIds = recipes.map((e) => e.authorId).toSet().toList();
     if (authorIds.isEmpty) return {};
-
-    print("${authorIds}");
 
     final userSnapshot = await firestore.collection("users").where(FieldPath.documentId, whereIn: authorIds).get();
 

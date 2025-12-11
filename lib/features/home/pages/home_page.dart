@@ -41,7 +41,6 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
           child: Column(
             children: [
-              // Add your home page content here
               Container(
                 height: 200,
                 decoration: BoxDecoration(

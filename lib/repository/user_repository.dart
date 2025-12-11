@@ -39,4 +39,34 @@ class UserRepository {
       return [];
     }
   }
+
+  Future<void> followUser(String chefId) async {
+    final currentId = _authService.currentUser?.uid;
+
+    final chefRef = firestore.collection("users").doc(chefId);
+    final currentRef = firestore.collection("users").doc(currentId);
+
+    await chefRef.update({
+      "followers": FieldValue.arrayUnion([currentId]),
+    });
+
+    await currentRef.update({
+      "following": FieldValue.arrayUnion([chefId]),
+    });
+  }
+
+  Future<void> unfollowUser(String chefId) async {
+    final currentId = _authService.currentUser?.uid;
+
+    final chefRef = firestore.collection("users").doc(chefId);
+    final currentRef = firestore.collection("users").doc(currentId);
+
+    await chefRef.update({
+      "followers": FieldValue.arrayRemove([currentId]),
+    });
+
+    await currentRef.update({
+      "following": FieldValue.arrayRemove([chefId]),
+    });
+  }
 }
