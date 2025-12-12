@@ -34,9 +34,7 @@ class RecipeCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     image: DecorationImage(
-                      image: recipe.imageUrl != null && recipe.imageUrl!.isNotEmpty
-                          ? NetworkImage(recipe.imageUrl!)
-                          : const AssetImage('assets/images/images.jpg') as ImageProvider,
+                      image: _homeController.buildImageProvider(recipe.imageUrl),
                       fit: BoxFit.cover,
                     ),
                   ),

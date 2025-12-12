@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:yumshare/bindings/discorver_binding.dart';
 import 'package:yumshare/bindings/home_binding.dart';
+import 'package:yumshare/bindings/recipe_binding.dart';
 import 'package:yumshare/features/recipe/recipe_detail/pages/recipe_detail.dart';
 import 'package:yumshare/features/recipe/create_recipe/create_recipe_page.dart';
 import 'package:yumshare/features/myrecipe/pages/my_recipe_page.dart';
@@ -12,7 +13,7 @@ class RecipeRoutes {
   static final routes = [
     GetPage(name: Routes.myRecipe, page: () => const MyRecipePage()),
 
-    GetPage(name: Routes.createRecipe, page: () => const CreateRecipePage()),
+    GetPage(name: Routes.createRecipe, page: () => const CreateRecipePage(), binding: RecipeBinding()),
 
     GetPage(
       name: Routes.recipeDetail,

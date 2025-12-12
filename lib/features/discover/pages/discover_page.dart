@@ -66,6 +66,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
               _buildTitleSection('Recipe Categories', Routes.categoryRecipe),
               const SizedBox(height: 8),
               _buildSectionCategory(controller),
+              _buildTitleSection('Recipe Areas', Routes.areaRecipe),
+              const SizedBox(height: 8),
+              _buildSectionArea(controller),
               // _buildTitleSection('Our Recommendations'),
               // _buildTitleSection('Most Searches'),
               _buildTitleSection('Top Chefs', ''),
@@ -108,6 +111,24 @@ Widget _buildSectionCategory(DiscoverController controller) {
         final image = category['image']!;
         final count = controller.getCategoryCount(name);
         return _categoryCard(title: name, image: image, count: count);
+      },
+    ),
+  );
+}
+
+Widget _buildSectionArea(DiscoverController controller) {
+  return SizedBox(
+    height: 150,
+    child: ListView.separated(
+      scrollDirection: Axis.horizontal,
+      itemCount: controller.areas.length,
+      separatorBuilder: (_, _) => const SizedBox(width: 12),
+      itemBuilder: (context, index) {
+        final area = controller.areas[index];
+        final name = area['name']!;
+        final image = area['image']!;
+        final count = controller.getAreaCount(name);
+        return _areaCard(title: name, image: image, count: count);
       },
     ),
   );
@@ -199,47 +220,112 @@ Widget _buildSectionTopChefs(DiscoverController controller) {
 Widget _categoryCard({required String title, required String image, required int count}) {
   return SizedBox(
     width: 200,
-    child: Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-      child: Stack(
-        clipBehavior: Clip.antiAlias,
-        children: [
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                image: DecorationImage(image: AssetImage(image), fit: BoxFit.cover),
+    child: GestureDetector(
+      onTap: () {
+        Get.toNamed("${Routes.recipesByCategoryPage}?${Routes.category}=$title");
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        child: Stack(
+          clipBehavior: Clip.antiAlias,
+          children: [
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  image: DecorationImage(image: AssetImage(image), fit: BoxFit.cover),
+                ),
               ),
             ),
-          ),
 
-          // overlay
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Colors.black.withOpacity(0.35)),
+            // overlay
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.black.withOpacity(0.35),
+                ),
+              ),
             ),
-          ),
 
-          Positioned(
-            bottom: 12,
-            left: 12,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  '$count recipes',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
-                ),
-              ],
+            Positioned(
+              bottom: 12,
+              left: 12,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    '$count recipes',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
+      ),
+    ),
+  );
+}
+
+Widget _areaCard({required String title, required String image, required int count}) {
+  return SizedBox(
+    width: 200,
+    child: GestureDetector(
+      onTap: () {
+        Get.toNamed(Routes.recipesByAreaPage, arguments: title);
+      },
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        child: Stack(
+          clipBehavior: Clip.antiAlias,
+          children: [
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  image: DecorationImage(image: AssetImage("assets/images/avatar1.png"), fit: BoxFit.cover),
+                ),
+              ),
+            ),
+
+            // overlay
+            Positioned.fill(
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12),
+                  color: Colors.black.withOpacity(0.35),
+                ),
+              ),
+            ),
+
+            Positioned(
+              bottom: 12,
+              left: 12,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    '$count recipes',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     ),
   );

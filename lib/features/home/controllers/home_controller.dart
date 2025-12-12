@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yumshare/models/recipes.dart';
 import 'package:yumshare/models/users.dart';
@@ -71,4 +74,23 @@ class HomeController extends GetxController {
   }
 
   bool isFavorite(String recipeId) => favoriteIds.contains(recipeId);
+  
+  ImageProvider buildImageProvider(String? value) {
+    if (value == null || value.isEmpty) {
+      return const AssetImage('assets/images/images.jpg');
+    }
+
+    // Nếu là base64
+    final isBase64 = value.startsWith('data:image') || RegExp(r'^[A-Za-z0-9+/=]+$').hasMatch(value);
+
+    if (isBase64) {
+      // Tách prefix data:image/...;base64,
+      final cleaned = value.contains(',') ? value.split(',').last : value;
+
+      return MemoryImage(base64Decode(cleaned));
+    }
+
+    // Còn lại là URL mạng
+    return NetworkImage(value);
+  }
 }

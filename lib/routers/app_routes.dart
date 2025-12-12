@@ -19,7 +19,9 @@ class Routes {
   // Discover
   static const discover = '/discover';
   static const categoryRecipe = '/category-recipe';
+  static const areaRecipe = '/area-recipe';
   static const recipesByCategoryPage = '/recipe-by-cate';
+  static const recipesByAreaPage = '/recipe-by-area';
   static const search = '/search';
   static const category = 'category';
   static const chefsPage = '/chefs-page';

@@ -3,6 +3,7 @@ import 'package:yumshare/bindings/auth_binding.dart';
 import 'package:yumshare/bindings/discorver_binding.dart';
 import 'package:yumshare/bindings/home_binding.dart';
 import 'package:yumshare/bindings/profile_binding.dart';
+import 'package:yumshare/bindings/recipe_binding.dart';
 import 'package:yumshare/home.dart';
 import 'package:yumshare/routers/app_routes.dart';
 import 'package:yumshare/routers/page/auth_routes.dart';
@@ -23,7 +24,7 @@ class AppPages {
     GetPage(
       name: Routes.h,
       page: () => Home(),
-      bindings: [HomeBinding(), ProfileBinding(), AuthBinding(), DiscorverBinding()],
+      bindings: [HomeBinding(), ProfileBinding(), AuthBinding(), DiscorverBinding(), RecipeBinding()],
     ),
   ];
 }

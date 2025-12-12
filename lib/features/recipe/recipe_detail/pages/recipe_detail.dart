@@ -95,7 +95,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                 background: Stack(
                   fit: StackFit.expand,
                   children: [
-                    Image.network("${widget.recipe.imageUrl}", fit: BoxFit.cover),
+                    Image(image: homeController.buildImageProvider(widget.recipe.imageUrl), fit: BoxFit.cover),
                     Positioned.fill(child: Container(color: Colors.black.withOpacity(0.35))),
                   ],
                 ),
@@ -161,8 +161,8 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        _infoChip(Icons.timer_outlined, "10 mins", 'cook time'),
-                        _infoChip(Icons.restaurant, "1 serving", 'serves'),
+                        _infoChip(Icons.timer_outlined, "${widget.recipe.cookingTime} minutes", 'cook time'),
+                        _infoChip(Icons.restaurant, "${widget.recipe.servingPeople} serving", 'serves'),
                         _infoChip(Icons.flag_outlined, widget.recipe.regions, 'origin'),
                       ],
                     ),
@@ -198,6 +198,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                     const SizedBox(height: 16),
 
                     _similarRecipes(similar),
+                    const SizedBox(height: 10),
                   ],
                 ),
               ),

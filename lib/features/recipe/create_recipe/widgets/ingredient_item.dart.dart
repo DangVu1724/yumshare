@@ -12,61 +12,56 @@ class IngredientItem extends StatelessWidget {
     return Obx(() {
       if (ctrl.ingredients.isEmpty) {
         return SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text("No ingredients"),
-          ),
+          child: Padding(padding: const EdgeInsets.all(16), child: Text("No ingredients")),
         );
       }
 
       return SliverReorderableList(
         itemCount: ctrl.ingredients.length,
-        onReorder: (oldIndex, newIndex) {
-          ctrl.reorder(oldIndex, newIndex);
-        },
+        onReorder: (oldIndex, newIndex) => ctrl.reorder(oldIndex, newIndex),
         itemBuilder: (context, index) {
           final ing = ctrl.ingredients[index];
           final controller = ctrl.controllers[ing.ingredientId]!;
 
-          return ReorderableDragStartListener(
+          return Material(
+            // <- THÊM
             key: ValueKey(ing.ingredientId),
-            index: index,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              child: Row(
-                children: [
-                  const Icon(Icons.menu),
-                  const SizedBox(width: 5),
-                  CircleAvatar(
-                    radius: 12,
-                    backgroundColor: const Color.fromARGB(255, 249, 237, 241),
-                    child: Text(
-                      '${index + 1}',
-                      style: const TextStyle(color: Colors.pink, fontSize: 12),
+            color: Colors.transparent, // tránh che layout
+            child: ReorderableDragStartListener(
+              index: index,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                child: Row(
+                  children: [
+                    const Icon(Icons.menu),
+                    const SizedBox(width: 5),
+                    CircleAvatar(
+                      radius: 12,
+                      backgroundColor: const Color.fromARGB(255, 249, 237, 241),
+                      child: Text('${index + 1}', style: const TextStyle(color: Colors.pink, fontSize: 12)),
                     ),
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: TextField(
-                      controller: controller,
-                      onChanged: (val) => ctrl.updateIngredient(ing.ingredientId, val),
-                      decoration: InputDecoration(
-                        hintText: "Ingredient ${index + 1}",
-                        filled: true,
-                        fillColor: Colors.grey[100],
-                        border: OutlineInputBorder(
-                          
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.circular(16),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextField(
+                        controller: controller,
+                        onChanged: (val) => ctrl.updateIngredient(ing.ingredientId, val),
+                        decoration: InputDecoration(
+                          hintText: "Ingredient ${index + 1}",
+                          filled: true,
+                          fillColor: Colors.grey[100],
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => ctrl.removeIngredient(ing.ingredientId),
-                  ),
-                ],
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () => ctrl.removeIngredient(ing.ingredientId),
+                    ),
+                  ],
+                ),
               ),
             ),
           );

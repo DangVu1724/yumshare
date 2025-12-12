@@ -5,6 +5,7 @@ class BuildTextField extends StatelessWidget {
   final String hint;
   final TextEditingController controller;
   final int maxLines;
+  final TextInputType type;
 
   const BuildTextField({
     super.key,
@@ -12,6 +13,7 @@ class BuildTextField extends StatelessWidget {
     required this.hint,
     required this.controller,
     this.maxLines = 1,
+    required this.type,
   });
 
   @override
@@ -25,16 +27,14 @@ class BuildTextField extends StatelessWidget {
         TextField(
           controller: controller,
           maxLines: maxLines,
+          keyboardType: type,
           decoration: InputDecoration(
             filled: true,
             hintText: hint,
             floatingLabelBehavior: FloatingLabelBehavior.never,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             fillColor: Colors.grey[200],
-            border: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(16.0),
-            ),
+            border: OutlineInputBorder(borderSide: BorderSide.none, borderRadius: BorderRadius.circular(16.0)),
           ),
         ),
       ],

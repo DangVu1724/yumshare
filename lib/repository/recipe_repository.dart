@@ -7,6 +7,10 @@ class RecipeRepository {
   final firestore = FirebaseFirestore.instance;
   final AuthService _authService = AuthService();
 
+  Future<void> creatRecipe(Recipe recipe) async {
+    await firestore.collection("recipes").doc(recipe.id).set(recipe.toMap());
+  }
+
   Future<void> updateRecipe(Recipe recipe) async {
     await firestore.collection("recipes").doc(recipe.id).update(recipe.toMap());
   }

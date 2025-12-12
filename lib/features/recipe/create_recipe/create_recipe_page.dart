@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:yumshare/features/recipe/create_recipe/controllers/create_recipe_controller.dart';
 import 'package:yumshare/features/recipe/create_recipe/controllers/ingredient_provider.dart';
 import 'package:yumshare/features/recipe/create_recipe/controllers/step_provider.dart';
 import 'package:yumshare/features/recipe/create_recipe/widgets/build_text_field.dart';
@@ -19,8 +20,10 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _cookingTimeController = TextEditingController();
+  final TextEditingController _servingController = TextEditingController();
   final ing = Get.put(IngredientController());
   final step = Get.put(StepController());
+  final CreateRecipeController createRecipeController = Get.find<CreateRecipeController>();
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +33,55 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
         title: const Text('Create Recipe'),
         actions: [
           GestureDetector(
-            onTap: () {
-              // Handle save action
+            onTap: () async {
+              final name = _nameController.text.trim();
+              final description = _descriptionController.text.trim();
+              final cookingTime = double.tryParse(_cookingTimeController.text.trim()) ?? 0;
+              final people = int.tryParse(_servingController.text.trim()) ?? 1;
+              final ingredients = ing.ingredients;
+              final steps = step.steps;
+
+              final region = createRecipeController.selectedRegion;
+              final category = createRecipeController.selectedCategory;
+
+              final base64Image = await createRecipeController.convertImageToBase64();
+
+              if (name.isEmpty || description.isEmpty || region == null || category == null || base64Image == null) {
+                Get.snackbar("Missing info", "Please fill all required fields");
+                return;
+              }
+
+              await createRecipeController.createRecipe(
+                name: name,
+                description: description,
+                cookingTime: cookingTime,
+                region: region,
+                category: category,
+                ingredients: ingredients,
+                steps: steps,
+                people: people,
+                imageUrl: base64Image,
+              );
+
+              _nameController.clear();
+              _descriptionController.clear();
+              _cookingTimeController.clear();
+              _servingController.clear();
+
+              ing.ingredients.clear();
+              step.steps.clear();
+
+              createRecipeController.selectedRegion = null;
+              createRecipeController.selectedCategory = null;
+              createRecipeController.image.value = null; 
+
+              ing.update();
+              step.update();
+              createRecipeController.update();
+
+              Get.snackbar("Success", "Recipe created successfully");
             },
+
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Container(
@@ -60,20 +109,34 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
               delegate: SliverChildListDelegate([
                 ImagePickerBox(),
 
-                BuildTextField(label: 'Recipe Name', hint: 'Enter recipe name', controller: _nameController),
+                BuildTextField(
+                  label: 'Recipe Name',
+                  hint: 'Enter recipe name',
+                  controller: _nameController,
+                  type: TextInputType.text,
+                ),
 
                 BuildTextField(
                   label: 'Description',
                   hint: 'Enter recipe description',
                   controller: _descriptionController,
                   maxLines: 4,
+                  type: TextInputType.text,
                 ),
 
                 BuildTextField(
                   label: 'Cooking Time (minutes)',
                   hint: 'Enter cooking time',
                   controller: _cookingTimeController,
+                  type: TextInputType.number,
                 ),
+                BuildTextField(
+                  label: 'Number of servings',
+                  hint: 'Enter the number of servings',
+                  controller: _servingController,
+                  type: TextInputType.number,
+                ),
+                const SizedBox(height: 10),
 
                 MultiCategoryChipSelector(),
 
@@ -81,8 +144,6 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
                   padding: const EdgeInsets.only(top: 16, bottom: 8),
                   child: Text('Ingredients', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
                 ),
-
-
               ]),
             ),
           ),
