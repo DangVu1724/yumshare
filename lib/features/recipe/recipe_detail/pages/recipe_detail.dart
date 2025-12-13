@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:yumshare/features/discover/controllers/discover_controller.dart';
 import 'package:yumshare/features/home/controllers/home_controller.dart';
+import 'package:yumshare/features/recipe/create_recipe/controllers/create_recipe_controller.dart';
+import 'package:yumshare/features/recipe/recipe_detail/controllers/recipe_detail_controller.dart';
+import 'package:yumshare/features/recipe/recipe_detail/widgets/comment_section.dart';
 import 'package:yumshare/models/recipes.dart';
 import 'package:yumshare/models/users.dart';
+import 'package:yumshare/routers/app_routes.dart';
 import 'package:yumshare/utils/themes/app_colors.dart';
 import 'package:yumshare/widgets/recipe_card_widget.dart';
 
@@ -21,13 +26,59 @@ class RecipeDetailPage extends StatefulWidget {
 class _RecipeDetailPageState extends State<RecipeDetailPage> {
   final DiscoverController discoverController = Get.find<DiscoverController>();
   final HomeController homeController = Get.find<HomeController>();
+  final CreateRecipeController createRecipeController = Get.find<CreateRecipeController>();
+  final RecipeDetailController recipeDetailController = Get.find<RecipeDetailController>();
   bool isCollapsed = false;
   List<Recipe> similar = [];
+  GlobalKey publishKey = GlobalKey();
+  late TutorialCoachMark tutorialCoachMark;
 
   @override
   void initState() {
     super.initState();
     similar = discoverController.getSimilarRecipes(widget.recipe);
+    recipeDetailController.initWithRecipe(widget.recipe.id);
+
+    createTutorial();
+    Future.delayed(Duration.zero, () {
+      tutorialCoachMark.show(context: context);
+    });
+    Future.delayed(Duration(seconds: 3), () {
+      tutorialCoachMark.finish(); // đóng tutorial
+    });
+  }
+
+  void showTutorial() {
+    tutorialCoachMark.show(context: context);
+  }
+
+  void createTutorial() {
+    tutorialCoachMark = TutorialCoachMark(
+      targets: [
+        TargetFocus(
+          identify: "publish_icon",
+          keyTarget: publishKey,
+          contents: [
+            TargetContent(
+              align: ContentAlign.bottom,
+              builder: (context, controller) {
+                return const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    "Tap here to publish your recipe and let more people see it!",
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ],
+      colorShadow: Colors.black54,
+      paddingFocus: 10,
+      opacityShadow: 0.8,
+      onFinish: () => print("Tutorial finished"),
+    );
   }
 
   @override
@@ -82,10 +133,22 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                   );
                 }),
 
-                IconButton(
-                  icon: FaIcon(FontAwesomeIcons.paperPlane, color: isCollapsed ? Colors.black : Colors.white),
-                  onPressed: () {},
-                ),
+                Obx(() {
+                  final isPublished = homeController.isPublished(widget.recipe.id);
+
+                  return IconButton(
+                    icon: FaIcon(
+                      FontAwesomeIcons.solidPaperPlane,
+                      size: 15,
+                      color: isPublished ? AppColors.primary : (isCollapsed ? Colors.black : Colors.white),
+                    ),
+                    onPressed: () async {
+                      await createRecipeController.togglePublishedRecipe(widget.recipe.id);
+                      homeController.togglePublished(widget.recipe.id);
+                    },
+                  );
+                }),
+
                 IconButton(
                   icon: Icon(Icons.info, color: isCollapsed ? Colors.black : Colors.white),
                   onPressed: () {},
@@ -126,7 +189,9 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                         Spacer(),
                         isOwner
                             ? ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Get.toNamed(Routes.editRecipe, arguments: widget.recipe);
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.primary,
                                   shape: const StadiumBorder(),
@@ -195,6 +260,9 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                       },
                     ),
 
+                    const SizedBox(height: 16),
+
+                    BuildComment(recipeDetailController: recipeDetailController, widget: widget),
                     const SizedBox(height: 16),
 
                     _similarRecipes(similar),

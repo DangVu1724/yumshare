@@ -13,6 +13,7 @@ class HomeController extends GetxController {
   RxList<Recipe> favoriteRecipes = <Recipe>[].obs;
   RxList<Recipe> publishRecipes = <Recipe>[].obs;
   RxSet<String> favoriteIds = <String>{}.obs;
+  RxSet<String> publishedIds = <String>{}.obs;
 
   RxMap<String, Users> authors = <String, Users>{}.obs;
 
@@ -39,6 +40,7 @@ class HomeController extends GetxController {
   Future<void> loadMyRecipes() async {
     myRecipes.value = await recipeRepository.getMyRecipes();
     publishRecipes.value = myRecipes.where((r) => r.isShared == true).toList();
+    publishedIds.value = myRecipes.where((r) => r.isShared == true).map((r) => r.id).toSet();
   }
 
   Future<void> loadFavorite() async {
@@ -73,8 +75,18 @@ class HomeController extends GetxController {
     }
   }
 
+  void togglePublished(String recipeId) {
+    if (publishedIds.contains(recipeId)) {
+      publishedIds.remove(recipeId);
+    } else {
+      publishedIds.add(recipeId);
+    }
+  }
+
+  bool isPublished(String recipeId) => publishedIds.contains(recipeId);
+
   bool isFavorite(String recipeId) => favoriteIds.contains(recipeId);
-  
+
   ImageProvider buildImageProvider(String? value) {
     if (value == null || value.isEmpty) {
       return const AssetImage('assets/images/images.jpg');

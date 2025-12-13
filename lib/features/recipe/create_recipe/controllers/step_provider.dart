@@ -4,7 +4,7 @@ import 'package:yumshare/models/recipte_step.dart';
 
 class StepController extends GetxController {
   var steps = <RecipeStep>[].obs;
-  final Map<int, TextEditingController> controllers = {}; 
+  final Map<int, TextEditingController> controllers = {};
 
   @override
   void onInit() {
@@ -16,15 +16,20 @@ class StepController extends GetxController {
     }
   }
 
+  void loadSteps(List<RecipeStep> recipeSteps) {
+    steps.assignAll(recipeSteps);
+
+    controllers.clear();
+    for (int i = 0; i < steps.length; i++) {
+      controllers[i] = TextEditingController(text: steps[i].description);
+    }
+  }
+
   void addStep([String? description]) {
-    final step = RecipeStep(
-      stepNumber: steps.length + 1,
-      description: description ?? "Step ${steps.length + 1}",
-    );
+    final step = RecipeStep(stepNumber: steps.length + 1, description: description ?? "Step ${steps.length + 1}");
     steps.add(step);
 
-    controllers[steps.length - 1] =
-        TextEditingController(text: step.description);
+    controllers[steps.length - 1] = TextEditingController(text: step.description);
   }
 
   void removeStep(int index) {
@@ -36,7 +41,7 @@ class StepController extends GetxController {
     // cập nhật lại stepNumber và controllers
     for (int i = 0; i < steps.length; i++) {
       steps[i].stepNumber = i + 1;
-      controllers[i] ??= TextEditingController(text: steps[i].description);
+      controllers[i] = controllers[i] ?? TextEditingController(text: steps[i].description);
     }
     steps.refresh();
   }

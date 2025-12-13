@@ -11,8 +11,8 @@ class RecipeRepository {
     await firestore.collection("recipes").doc(recipe.id).set(recipe.toMap());
   }
 
-  Future<void> updateRecipe(Recipe recipe) async {
-    await firestore.collection("recipes").doc(recipe.id).update(recipe.toMap());
+  Future<void> updateRecipe(String id, Map<String, dynamic> data) async {
+    await firestore.collection("recipes").doc(id).update(data);
   }
 
   Future<List<Recipe>> getMyRecipes() async {
@@ -142,4 +142,6 @@ class RecipeRepository {
       return Recipe.fromMap({...data, 'id': doc.id});
     }).toList();
   }
+
+ 
 }

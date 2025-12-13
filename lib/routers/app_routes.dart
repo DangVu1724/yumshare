@@ -30,4 +30,7 @@ class Routes {
   static const recipeDetail = '/recipe-detail';
   static const myRecipe = '/my-recipe';
   static const createRecipe = '/create-recipe';
+  static const editRecipe = '/edit-recipe';
+  static const comments = '/comment';
+  
 }

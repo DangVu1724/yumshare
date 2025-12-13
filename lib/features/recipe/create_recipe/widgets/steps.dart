@@ -21,7 +21,6 @@ class StepItem extends StatelessWidget {
         onReorder: (oldIndex, newIndex) => ctrl.reorder(oldIndex, newIndex),
         itemBuilder: (context, index) {
           final step = ctrl.steps[index];
-          final controller = ctrl.controllers[index]!;
 
           return Material(
             // <- THÊM
@@ -47,7 +46,10 @@ class StepItem extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: TextField(
-                        controller: controller,
+                        controller: ctrl.controllers.putIfAbsent(
+                          index,
+                          () => TextEditingController(text: step.description),
+                        ),
                         onChanged: (val) => ctrl.updateStep(index, val),
                         decoration: InputDecoration(
                           hintText: "Step ${step.stepNumber}",
@@ -60,6 +62,7 @@ class StepItem extends StatelessWidget {
                         ),
                       ),
                     ),
+
                     IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () => ctrl.removeStep(index),

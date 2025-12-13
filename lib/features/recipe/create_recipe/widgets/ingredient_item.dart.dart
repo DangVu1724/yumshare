@@ -21,7 +21,10 @@ class IngredientItem extends StatelessWidget {
         onReorder: (oldIndex, newIndex) => ctrl.reorder(oldIndex, newIndex),
         itemBuilder: (context, index) {
           final ing = ctrl.ingredients[index];
-          final controller = ctrl.controllers[ing.ingredientId]!;
+          final controller = ctrl.controllers.putIfAbsent(
+            ing.ingredientId,
+            () => TextEditingController(text: ing.description),
+          );
 
           return Material(
             // <- THÊM
@@ -43,7 +46,10 @@ class IngredientItem extends StatelessWidget {
                     const SizedBox(width: 10),
                     Expanded(
                       child: TextField(
-                        controller: controller,
+                        controller: ctrl.controllers.putIfAbsent(
+                          ing.ingredientId,
+                          () => TextEditingController(text: ing.description),
+                        ),
                         onChanged: (val) => ctrl.updateIngredient(ing.ingredientId, val),
                         decoration: InputDecoration(
                           hintText: "Ingredient ${index + 1}",
