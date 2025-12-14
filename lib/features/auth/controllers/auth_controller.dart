@@ -17,7 +17,7 @@ class AuthController extends GetxController {
     try {
       isLoading.value = true;
       await _authService.registerWithEmail(name: name, email: email, password: password);
-      Get.toNamed(Routes.login);
+      Get.toNamed(Routes.setup);
     } catch (e) {
       rethrow;
     } finally {

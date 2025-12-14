@@ -9,6 +9,7 @@ class Routes {
   // Auth
   static const login = '/login';
   static const register = '/register';
+  static const setup = '/setup';
 
   // Profile
   static const profile = '/profile';

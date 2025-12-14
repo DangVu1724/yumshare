@@ -7,10 +7,16 @@ class Users {
   final String userId;
   final String name;
   final String email;
+
+  final String? country;
+  final List<String> favoriteCategories;
+  final String? cookingLevel;
+
   final List<String> myRecipes;
   final List<String> favoriteRecipes;
   final List<String> followers;
   final List<String> following;
+
   final DateTime? createdAt;
   final String? description;
   final String? address;
@@ -26,6 +32,9 @@ class Users {
     required this.email,
     required this.myRecipes,
     required this.favoriteRecipes,
+    this.country,
+    this.favoriteCategories = const [],
+    this.cookingLevel,
     this.photoUrl,
     this.followers = const [],
     this.following = const [],
@@ -42,6 +51,9 @@ class Users {
     String? userId,
     String? name,
     String? email,
+    String? country,
+    List<String>? favoriteCategories,
+    String? cookingLevel,
     List<String>? myRecipes,
     List<String>? favoriteRecipes,
     List<String>? followers,
@@ -59,6 +71,9 @@ class Users {
       userId: userId ?? this.userId,
       name: name ?? this.name,
       email: email ?? this.email,
+      country: country ?? this.country,
+      favoriteCategories: favoriteCategories ?? this.favoriteCategories,
+      cookingLevel: cookingLevel ?? this.cookingLevel,
       myRecipes: myRecipes ?? this.myRecipes,
       favoriteRecipes: favoriteRecipes ?? this.favoriteRecipes,
       followers: followers ?? this.followers,
@@ -79,6 +94,9 @@ class Users {
       'userId': userId,
       'name': name,
       'email': email,
+      'country': country,
+      'favoriteCategories': favoriteCategories,
+      'cookingLevel': cookingLevel,
       'myRecipes': myRecipes,
       'favoriteRecipes': favoriteRecipes,
       'followers': followers,
@@ -99,6 +117,9 @@ class Users {
       userId: map['userId'] ?? '',
       name: map['name'] ?? '',
       email: map['email'] ?? '',
+      country: map['country'],
+      favoriteCategories: (map['favoriteCategories'] as List<dynamic>? ?? []).cast<String>(),
+      cookingLevel: map['cookingLevel'],
       myRecipes: (map['myRecipes'] as List<dynamic>? ?? []).cast<String>(),
       favoriteRecipes: (map['favoriteRecipes'] as List<dynamic>? ?? []).cast<String>(),
       followers: (map['followers'] as List<dynamic>? ?? []).cast<String>(),

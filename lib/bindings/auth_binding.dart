@@ -1,9 +1,11 @@
 import 'package:get/get.dart';
 import 'package:yumshare/features/auth/controllers/auth_controller.dart';
+import 'package:yumshare/features/auth/controllers/setup_controller.dart';
 
 class AuthBinding extends Bindings {
   @override
   void dependencies() {
     Get.lazyPut(() => AuthController());
+    Get.lazyPut(() => UserSetupController());
   }
 }

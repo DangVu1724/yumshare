@@ -143,5 +143,16 @@ class RecipeRepository {
     }).toList();
   }
 
- 
+  Stream<Map<String, dynamic>> recipeLikeStream(String recipeId) {
+    return firestore.collection('recipes').doc(recipeId).snapshots().map((doc) => doc.data() ?? {});
+  }
+
+  Future<void> toggleLike({required String recipeId, required String userId, required bool isLiked}) async {
+    final ref = firestore.collection('recipes').doc(recipeId);
+
+    await ref.update({
+      'likesCount': FieldValue.increment(isLiked ? -1 : 1),
+      'likedBy': isLiked ? FieldValue.arrayRemove([userId]) : FieldValue.arrayUnion([userId]),
+    });
+  }
 }
