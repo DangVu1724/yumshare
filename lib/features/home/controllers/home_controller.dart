@@ -2,9 +2,12 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
+import 'package:yumshare/features/auth/services/auth_service.dart';
 import 'package:yumshare/models/recipes.dart';
 import 'package:yumshare/models/users.dart';
 import 'package:yumshare/repository/recipe_repository.dart';
+import 'package:yumshare/services/cache_service.dart';
 
 class HomeController extends GetxController {
   final RecipeRepository recipeRepository = RecipeRepository();
@@ -19,10 +22,20 @@ class HomeController extends GetxController {
 
   var isLoading = false.obs;
   var isAuthorLoading = false.obs;
+  final hasCache = false.obs;
 
   @override
   void onInit() {
     super.onInit();
+    final uid = AuthService().currentUser?.uid;
+    if (uid == null) return;
+    final cached = CacheService().getHomeFeed(uid);
+    if (cached.isNotEmpty) {
+      myRecipes.value = cached;
+      publishRecipes.value = cached.where((r) => r.isShared).toList();
+      hasCache.value = true;
+    }
+    Logger().i("Cached home feed: ${cached.length} recipes");
     loadRecipesAuthors();
     loadData();
   }
@@ -38,9 +51,13 @@ class HomeController extends GetxController {
   }
 
   Future<void> loadMyRecipes() async {
-    myRecipes.value = await recipeRepository.getMyRecipes();
-    publishRecipes.value = myRecipes.where((r) => r.isShared == true).toList();
-    publishedIds.value = myRecipes.where((r) => r.isShared == true).map((r) => r.id).toSet();
+    final result = await recipeRepository.getMyRecipes();
+    myRecipes.value = result;
+
+    final uid = AuthService().currentUser?.uid;
+    if (uid != null) {
+      CacheService().saveHomeFeed(uid, result);
+    }
   }
 
   Future<void> loadFavorite() async {

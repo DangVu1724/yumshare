@@ -5,6 +5,7 @@ import 'package:yumshare/models/recipes.dart';
 import 'package:yumshare/models/users.dart';
 import 'package:yumshare/repository/recipe_repository.dart';
 import 'package:yumshare/repository/user_repository.dart';
+import 'package:yumshare/services/cache_service.dart';
 
 class DiscoverController extends GetxController {
   List<Map<String, String>> categories = [
@@ -74,6 +75,8 @@ class DiscoverController extends GetxController {
   var newRecipes = <Recipe>[].obs;
   var topChefs = <Users>[].obs;
   var isLoading = false.obs;
+  final hasCache = false.obs;
+
   late final String? userId;
   var logger = Logger();
 
@@ -81,23 +84,32 @@ class DiscoverController extends GetxController {
   void onInit() {
     super.onInit();
     userId = _authService.currentUser?.uid;
+    final cached = CacheService().getDiscoverPage1();
+    if (cached.isNotEmpty) {
+      allRecipes.value = cached;
+      _groupByCategory(cached);
+      _groupByArea(cached);
+      hasCache.value = true;
+    }
+    logger.i("Cached discover page 1: ${cached.length} recipes");
+
     fetchAllRecipes();
     fetchTopUsers();
   }
 
   Future<void> fetchAllRecipes() async {
-    try {
-      isLoading.value = true;
+    isLoading.value = true;
 
-      final recipes = await repo.fetchAllRecipes();
-      allRecipes.value = recipes;
+    final recipes = await repo.fetchAllRecipes();
+    allRecipes.value = recipes;
 
-      _groupByCategory(recipes);
-      _groupByArea(recipes);
-      _getNewRecipes(recipes);
-    } finally {
-      isLoading.value = false;
-    }
+    CacheService().saveDiscoverPage1(recipes);
+
+    _groupByCategory(recipes);
+    _groupByArea(recipes);
+    _getNewRecipes(recipes);
+
+    isLoading.value = false;
   }
 
   Future<void> fetchTopUsers({int minRecipes = 10}) async {

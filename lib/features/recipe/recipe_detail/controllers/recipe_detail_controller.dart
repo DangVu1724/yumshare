@@ -32,11 +32,9 @@ class RecipeDetailController extends GetxController {
       _applySort();
     });
 
-    _recipeLikeSub =
-        recipeRepo.recipeLikeStream(recipeId).listen((data) {
+    _recipeLikeSub = recipeRepo.recipeLikeStream(recipeId).listen((data) {
       recipeLikes.value = data['likesCount'] ?? 0;
-      likedBy.value =
-          Set<String>.from(data['likedBy'] ?? []);
+      likedBy.value = Set<String>.from(data['likedBy'] ?? []);
     });
   }
 
@@ -47,12 +45,7 @@ class RecipeDetailController extends GetxController {
     required String userName,
     required String content,
   }) async {
-    await commentRepo.addComment(
-      recipeId: recipeId,
-      userId: userId,
-      userName: userName,
-      content: content,
-    );
+    await commentRepo.addComment(recipeId: recipeId, userId: userId, userName: userName, content: content);
   }
 
   void changeSort(CommentSortType type) {
@@ -79,11 +72,7 @@ class RecipeDetailController extends GetxController {
   }
 
   // ---------------- COMMENT LIKE ----------------
-  void toggleLikeComment({
-    required String recipeId,
-    required String commentId,
-    required String currentUserId,
-  }) async {
+  void toggleLikeComment({required String recipeId, required String commentId, required String currentUserId}) async {
     final index = comments.indexWhere((c) => c.id == commentId);
     if (index == -1) return;
 
@@ -103,12 +92,7 @@ class RecipeDetailController extends GetxController {
     comments.refresh();
 
     try {
-      await commentRepo.toggleLike(
-        recipeId: recipeId,
-        commentId: commentId,
-        userId: currentUserId,
-        isLiked: isLiked,
-      );
+      await commentRepo.toggleLike(recipeId: recipeId, commentId: commentId, userId: currentUserId, isLiked: isLiked);
     } catch (_) {
       // rollback
       if (isLiked) {
@@ -132,36 +116,29 @@ class RecipeDetailController extends GetxController {
     return recipeLikes.value;
   }
 
-  Future<void> toggleLike({
-    required String recipeId,
-    required String currentUserId,
-  }) async {
+  Future<void> toggleLike({required String recipeId, required String currentUserId}) async {
     final isLikedNow = likedBy.contains(currentUserId);
 
-    // optimistic
     if (isLikedNow) {
       likedBy.remove(currentUserId);
-      recipeLikes--;
+      recipeLikes.value--;
     } else {
       likedBy.add(currentUserId);
-      recipeLikes++;
+      recipeLikes.value++;
     }
+    likedBy.refresh();
 
     try {
-      await recipeRepo.toggleLike(
-        recipeId: recipeId,
-        userId: currentUserId,
-        isLiked: isLikedNow,
-      );
+      await recipeRepo.toggleLike(recipeId: recipeId, userId: currentUserId, isLiked: isLikedNow);
     } catch (_) {
-      // rollback
       if (isLikedNow) {
         likedBy.add(currentUserId);
-        recipeLikes++;
+        recipeLikes.value++;
       } else {
         likedBy.remove(currentUserId);
-        recipeLikes--;
+        recipeLikes.value--;
       }
+      likedBy.refresh();
     }
   }
 

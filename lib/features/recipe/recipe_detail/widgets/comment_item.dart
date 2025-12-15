@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:yumshare/features/auth/services/auth_service.dart';
 import 'package:yumshare/features/recipe/recipe_detail/controllers/recipe_detail_controller.dart';
 import 'package:yumshare/models/comment.dart';
