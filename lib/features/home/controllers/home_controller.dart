@@ -58,6 +58,9 @@ class HomeController extends GetxController {
     if (uid != null) {
       CacheService().saveHomeFeed(uid, result);
     }
+
+    publishRecipes.value = result.where((r) => r.isShared).toList();
+    publishedIds.value = publishRecipes.map((e) => e.id).toSet();
   }
 
   Future<void> loadFavorite() async {
@@ -106,7 +109,7 @@ class HomeController extends GetxController {
 
   ImageProvider buildImageProvider(String? value) {
     if (value == null || value.isEmpty) {
-      return const AssetImage('assets/images/images.jpg');
+      return const AssetImage('assets/images/avatar1.png');
     }
 
     // Nếu là base64

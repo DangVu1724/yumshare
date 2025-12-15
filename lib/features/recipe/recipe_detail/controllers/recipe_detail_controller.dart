@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
+import 'package:yumshare/features/auth/services/auth_service.dart';
 import 'package:yumshare/models/comment.dart';
 import 'package:yumshare/models/comment_sort_type.dart';
 import 'package:yumshare/repository/comment_repo.dart';
@@ -22,6 +24,12 @@ class RecipeDetailController extends GetxController {
   RxSet<String> likedBy = <String>{}.obs;
   StreamSubscription? _recipeLikeSub;
 
+  final userRating = 0.0.obs;
+  final hasRated = false.obs;
+  final isSubmittingRating = false.obs;
+
+  final uid = AuthService().currentUser!.uid;
+
   // ---------------- INIT ----------------
   void initWithRecipe(String recipeId) {
     _commentSub?.cancel();
@@ -36,6 +44,8 @@ class RecipeDetailController extends GetxController {
       recipeLikes.value = data['likesCount'] ?? 0;
       likedBy.value = Set<String>.from(data['likedBy'] ?? []);
     });
+
+    checkUserRating(recipeId, uid);
   }
 
   // ---------------- COMMENT ----------------
@@ -139,6 +149,33 @@ class RecipeDetailController extends GetxController {
         recipeLikes.value--;
       }
       likedBy.refresh();
+    }
+  }
+
+  Future<void> submitRating({required String recipeId, required double rating}) async {
+    if (hasRated.value) return;
+
+    isSubmittingRating.value = true;
+    try {
+      await commentRepo.submitRating(recipeId: recipeId, rating: rating, userId: uid);
+      userRating.value = rating;
+      hasRated.value = true;
+    } finally {
+      isSubmittingRating.value = false;
+    }
+  }
+
+  Future<void> checkUserRating(String recipeId, String userId) async {
+    final snap = await FirebaseFirestore.instance
+        .collection('recipes')
+        .doc(recipeId)
+        .collection('ratings')
+        .doc(userId)
+        .get();
+
+    if (snap.exists) {
+      hasRated.value = true;
+      userRating.value = (snap['rating'] as num).toDouble();
     }
   }
 

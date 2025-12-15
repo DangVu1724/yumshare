@@ -27,7 +27,7 @@ class RecipeFeedHive {
   final bool isShared;
 
   @HiveField(7)
-  final int likes;
+  final int likesCount;
 
   @HiveField(8)
   final double rating;
@@ -46,7 +46,7 @@ class RecipeFeedHive {
     required this.category,
     required this.regions,
     required this.isShared,
-    required this.likes,
+    required this.likesCount,
     required this.rating,
     required this.ratingCount,
     required this.createdAt,
@@ -62,7 +62,7 @@ class RecipeFeedHive {
       category: r.category,
       regions: r.regions,
       isShared: r.isShared,
-      likes: r.likes,
+      likesCount: r.likesCount,
       rating: r.rating,
       ratingCount: r.ratingCount,
       createdAt: r.createdAt,
@@ -79,7 +79,7 @@ class RecipeFeedHive {
       category: category,
       regions: regions,
       isShared: isShared,
-      likes: likes,
+      likesCount: likesCount,
       rating: rating,
       ratingCount: ratingCount,
       description: '',

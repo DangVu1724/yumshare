@@ -14,7 +14,7 @@ class Recipe {
   final List<RecipeStep> steps;
 
   final String? imageUrl;
-  final int likes;
+  final int likesCount;
 
   final String description;
   final String regions;
@@ -38,7 +38,7 @@ class Recipe {
     required this.ingredients,
     required this.steps,
     this.imageUrl,
-    this.likes = 0,
+    this.likesCount = 0,
     this.rating = 0.0,
     this.ratingCount = 0,
     required this.description,
@@ -52,7 +52,7 @@ class Recipe {
        updatedAt = updatedAt ?? DateTime.now();
 
   double get popularScore {
-    return (likes * 2) + (rating * ratingCount * 2) + ratingCount;
+    return (likesCount * 2) + (rating * ratingCount * 2) + ratingCount;
   }
 
   Recipe copyWith({
@@ -64,7 +64,7 @@ class Recipe {
     List<Ingredients>? ingredients,
     List<RecipeStep>? steps,
     String? imageUrl,
-    int? likes,
+    int? likesCount,
     double? rating,
     int? ratingCount,
     String? description,
@@ -84,7 +84,7 @@ class Recipe {
       ingredients: ingredients ?? this.ingredients,
       steps: steps ?? this.steps,
       imageUrl: imageUrl ?? this.imageUrl,
-      likes: likes ?? this.likes,
+      likesCount: likesCount ?? this.likesCount,
       rating: rating ?? this.rating,
       ratingCount: ratingCount ?? this.ratingCount,
       description: description ?? this.description,
@@ -107,7 +107,7 @@ class Recipe {
       'ingredients': ingredients.map((x) => x.toMap()).toList(),
       'steps': steps.map((x) => x.toMap()).toList(),
       'imageUrl': imageUrl,
-      'likes': likes,
+      'likesCount': likesCount,
       'rating': rating,
       'ratingCount': ratingCount,
       'description': description,
@@ -130,7 +130,7 @@ class Recipe {
       ingredients: (map['ingredients'] as List? ?? []).map((x) => Ingredients.fromMap(x)).toList(),
       steps: (map['steps'] as List? ?? []).map((x) => RecipeStep.fromMap(x)).toList(),
       imageUrl: map['imageUrl'],
-      likes: map['likes'] ?? 0,
+      likesCount: map['likesCount'] ?? 0,
       rating: (map['rating'] ?? 0).toDouble(),
       ratingCount: map['ratingCount'] ?? 0,
       description: map['description'] ?? '',

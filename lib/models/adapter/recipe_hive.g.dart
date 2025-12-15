@@ -24,7 +24,7 @@ class RecipeFeedHiveAdapter extends TypeAdapter<RecipeFeedHive> {
       category: fields[4] as String,
       regions: fields[5] as String,
       isShared: fields[6] as bool,
-      likes: fields[7] as int,
+      likesCount: fields[7] as int,
       rating: fields[8] as double,
       ratingCount: fields[9] as int,
       createdAt: fields[10] as DateTime,
@@ -50,7 +50,7 @@ class RecipeFeedHiveAdapter extends TypeAdapter<RecipeFeedHive> {
       ..writeByte(6)
       ..write(obj.isShared)
       ..writeByte(7)
-      ..write(obj.likes)
+      ..write(obj.likesCount)
       ..writeByte(8)
       ..write(obj.rating)
       ..writeByte(9)

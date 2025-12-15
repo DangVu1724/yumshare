@@ -47,4 +47,32 @@ class CommentRepo {
       'likesCount': FieldValue.increment(isLiked ? -1 : 1),
     });
   }
+
+  Future<void> submitRating({required String recipeId, required String userId, required double rating}) async {
+    final recipeRef = firestore.collection('recipes').doc(recipeId);
+    final ratingRef = recipeRef.collection('ratings').doc(userId);
+
+    await firestore.runTransaction((tx) async {
+      final ratingSnap = await tx.get(ratingRef);
+
+      if (ratingSnap.exists) {
+        throw Exception('User already rated');
+      }
+
+      final recipeSnap = await tx.get(recipeRef);
+      final data = recipeSnap.data()!;
+
+      final currentRating = (data['rating'] ?? 0).toDouble();
+      final ratingCount = (data['ratingCount'] ?? 0) as int;
+
+      final newCount = ratingCount + 1;
+      final newAvg = ((currentRating * ratingCount) + rating) / newCount;
+
+      tx.set(ratingRef, {'rating': rating, 'createdAt': FieldValue.serverTimestamp()});
+
+      tx.update(recipeRef, {'rating': newAvg, 'ratingCount': newCount});
+    });
+  }
+
+  
 }
