@@ -92,7 +92,7 @@ class FoodStep extends StatelessWidget {
           children: [
             const SizedBox(height: 8),
             
-            const Text(
+             Text(
               'What are your favorite foods?', 
               style: AppTextStyles.heading2,
             ),

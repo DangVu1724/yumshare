@@ -10,8 +10,6 @@ class CookingLevelStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final ctrl = Get.find<UserSetupController>();
-
     final List<Map<String, String>> levels = [
       {"name": "Beginner", "icon": "🍳", "description": "Just starting out, learning basics"},
       {"name": "Amateur", "icon": "👨‍🍳", "description": "Can follow recipes well"},
@@ -27,7 +25,7 @@ class CookingLevelStep extends StatelessWidget {
           children: [
             const SizedBox(height: 8),
 
-            const Text('What is your cooking level?', style: AppTextStyles.heading2),
+            Text('What is your cooking level?', style: AppTextStyles.heading2),
             const SizedBox(height: 8),
             Text(
               'Select your cooking experience for personalized recommendations.',

@@ -37,7 +37,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Discover', style: AppTextStyles.heading2)),
+      appBar: AppBar(title: Text('Discover', style: AppTextStyles.heading2)),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),

@@ -20,7 +20,7 @@ class CountryStep extends StatelessWidget {
           children: [
             const SizedBox(height: 24),
 
-            const Text('Which country are you from?', style: AppTextStyles.heading2),
+             Text('Which country are you from?', style: AppTextStyles.heading2),
             const SizedBox(height: 8),
             const Text(
               'Please select your country of residence to personalize your experience.',

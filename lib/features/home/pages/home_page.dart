@@ -4,6 +4,8 @@ import 'package:lottie/lottie.dart';
 import 'package:yumshare/features/home/controllers/home_controller.dart';
 import 'package:yumshare/features/home/widgets/recipe_section.dart';
 import 'package:yumshare/routers/app_routes.dart';
+import 'package:yumshare/utils/themes/app_colors.dart';
+import 'package:yumshare/utils/themes/text_style.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,7 +21,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('YumShare'),
+        title: Text('YumShare',style: AppTextStyles.heading2.copyWith(color: AppColors.primary),),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications),
