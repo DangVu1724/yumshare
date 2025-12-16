@@ -121,14 +121,12 @@ Widget _buildSectionArea(DiscoverController controller) {
     height: 150,
     child: ListView.separated(
       scrollDirection: Axis.horizontal,
-      itemCount: controller.areas.length,
+      itemCount: controller.countries.length,
       separatorBuilder: (_, _) => const SizedBox(width: 12),
       itemBuilder: (context, index) {
-        final area = controller.areas[index];
-        final name = area['name']!;
-        final image = area['image']!;
-        final count = controller.getAreaCount(name);
-        return _areaCard(title: name, image: image, count: count);
+        final area = controller.countries[index];
+        final count = controller.getAreaCount(area.adjective);
+        return _areaCard(title: area.name, image: area.flag, count: count);
       },
     ),
   );
@@ -290,7 +288,7 @@ Widget _areaCard({required String title, required String image, required int cou
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(12),
-                  image: DecorationImage(image: AssetImage("assets/images/avatar1.png"), fit: BoxFit.cover),
+                  image: DecorationImage(image: NetworkImage(image), fit: BoxFit.cover),
                 ),
               ),
             ),

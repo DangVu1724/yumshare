@@ -7,6 +7,7 @@ import 'package:yumshare/features/discover/pages/recipe_byarea_page.dart';
 import 'package:yumshare/features/discover/pages/recipe_category_page.dart';
 import 'package:yumshare/features/discover/pages/recipe_bycategory_page.dart';
 import 'package:yumshare/features/discover/pages/search_page.dart';
+import 'package:yumshare/models/country.dart';
 import 'package:yumshare/routers/app_routes.dart';
 
 class DiscoverRoutes {
@@ -28,7 +29,7 @@ class DiscoverRoutes {
     GetPage(
       name: Routes.recipesByAreaPage,
       page: () {
-        final area = Get.arguments as String;
+        final area = Get.arguments as Country;
         return RecipeByAreaPage(area: area);
       },
       bindings: [HomeBinding(), DiscorverBinding()],

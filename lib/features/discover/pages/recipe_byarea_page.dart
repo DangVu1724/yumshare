@@ -3,11 +3,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:yumshare/features/discover/controllers/discover_controller.dart';
 import 'package:yumshare/features/home/controllers/home_controller.dart';
+import 'package:yumshare/models/country.dart';
+import 'package:yumshare/utils/themes/app_colors.dart';
 import 'package:yumshare/utils/themes/text_style.dart';
 import 'package:yumshare/widgets/recipe_card_widget.dart';
 
 class RecipeByAreaPage extends StatelessWidget {
-  final String area;
+  final Country area;
   const RecipeByAreaPage({super.key, required this.area});
 
   @override
@@ -17,11 +19,11 @@ class RecipeByAreaPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(area, style: AppTextStyles.heading2),
+        title: Text(area.name, style: AppTextStyles.heading2),
         actions: [IconButton(onPressed: () {}, icon: const FaIcon(FontAwesomeIcons.magnifyingGlass))],
       ),
       body: Obx(() {
-        final areaRecipes = discoverController.areaRecipes[area] ?? [];
+        final areaRecipes = discoverController.areaRecipes[area.adjective] ?? [];
 
         return CustomScrollView(
           slivers: [
@@ -32,7 +34,7 @@ class RecipeByAreaPage extends StatelessWidget {
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16),
-                  image: DecorationImage(image: AssetImage("assets/images/areas/$area.png"), fit: BoxFit.cover),
+                  image: DecorationImage(image: NetworkImage(area.flag), fit: BoxFit.cover),
                 ),
                 child: Container(
                   decoration: BoxDecoration(
@@ -52,7 +54,7 @@ class RecipeByAreaPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            area,
+                            area.name,
                             style: const TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
                           ),
                           Text(
@@ -76,11 +78,16 @@ class RecipeByAreaPage extends StatelessWidget {
                   children: [
                     Text("Sort by", style: AppTextStyles.heading2),
                     GestureDetector(
-                      onTap: () {},
-                      child: const Row(
+                      onTap: () {
+                        discoverController.toggleSortRecipesByArea(area.adjective);
+                      },
+                      child: Row(
                         children: [
                           SizedBox(width: 6),
-                          FaIcon(FontAwesomeIcons.arrowDown, size: 16, color: Colors.red),
+                          Obx(() {
+                            final asc = discoverController.areaSortAscending[area.adjective] ?? true;
+                            return Icon(asc ? Icons.arrow_downward : Icons.arrow_upward, color: AppColors.primary,);
+                          }),
                         ],
                       ),
                     ),

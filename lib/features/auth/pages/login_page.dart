@@ -54,11 +54,7 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 32),
 
                 // Social login buttons
-                SignInButton(
-                  Buttons.google,
-                  onPressed: () async {
-                  },
-                ),
+                SignInButton(Buttons.google, onPressed: () async {}),
                 SignInButton(Buttons.facebook, onPressed: () {}),
                 const SizedBox(height: 22),
 

@@ -31,11 +31,9 @@ class _RecipeAreaPageState extends State<RecipeAreaPage> {
           crossAxisSpacing: 12,
           mainAxisSpacing: 12,
         ),
-        itemCount: controller.areas.length,
+        itemCount: controller.countries.length,
         itemBuilder: (context, index) {
-          final area = controller.areas[index];
-          final name = area['name']!;
-          final image = area['image']!;
+          final area = controller.countries[index];
 
           return SizedBox(
             height: 150,
@@ -44,7 +42,7 @@ class _RecipeAreaPageState extends State<RecipeAreaPage> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
               child: GestureDetector(
                 onTap: () {
-                  Get.toNamed(Routes.recipesByAreaPage, arguments: name);
+                  Get.toNamed(Routes.recipesByAreaPage, arguments: area);
                 },
                 child: Stack(
                   children: [
@@ -52,7 +50,7 @@ class _RecipeAreaPageState extends State<RecipeAreaPage> {
                       child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(12),
-                          image: DecorationImage(image: AssetImage(image) as ImageProvider, fit: BoxFit.cover),
+                          image: DecorationImage(image: NetworkImage(area.flag), fit: BoxFit.cover),
                         ),
                       ),
                     ),
@@ -72,7 +70,7 @@ class _RecipeAreaPageState extends State<RecipeAreaPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            name,
+                            area.name,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
@@ -80,7 +78,7 @@ class _RecipeAreaPageState extends State<RecipeAreaPage> {
                           const SizedBox(height: 3),
                           Obx(() {
                             return Text(
-                              '${controller.getAreaCount(name)} recipes',
+                              '${controller.getAreaCount(area.adjective)} recipes',
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold),
