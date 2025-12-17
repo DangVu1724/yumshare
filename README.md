@@ -7,7 +7,8 @@
 * Trải nghiệm mượt mà, tập trung vào nội dung
 * Dữ liệu rõ ràng, dễ mở rộng
 * Kiến trúc phù hợp cho mobile app thực tế
-  
+
+Link Video Demo: https://youtube.com/shorts/djXj-jRdb6E
 ---
 
 ## 🛠️ Công nghệ sử dụng
