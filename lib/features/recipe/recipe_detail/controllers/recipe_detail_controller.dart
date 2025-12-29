@@ -1,16 +1,20 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:yumshare/features/auth/services/auth_service.dart';
 import 'package:yumshare/models/comment.dart';
-import 'package:yumshare/models/comment_sort_type.dart';
+import 'package:yumshare/models/enums/comment_sort_type.dart';
 import 'package:yumshare/repository/comment_repo.dart';
+import 'package:yumshare/repository/notification_repo.dart';
 import 'package:yumshare/repository/recipe_repository.dart';
 
 class RecipeDetailController extends GetxController {
   final CommentRepo commentRepo = CommentRepo();
   final RecipeRepository recipeRepo = RecipeRepository();
+  final NotificationRepo notificationRepo = NotificationRepo();
 
   // COMMENTS
   List<Comment> rawComments = [];
@@ -27,6 +31,7 @@ class RecipeDetailController extends GetxController {
   final userRating = 0.0.obs;
   final hasRated = false.obs;
   final isSubmittingRating = false.obs;
+  var isShared = false.obs;
 
   final uid = AuthService().currentUser!.uid;
 
@@ -54,8 +59,15 @@ class RecipeDetailController extends GetxController {
     required String userId,
     required String userName,
     required String content,
+    required String recipeOwnerId,
   }) async {
     await commentRepo.addComment(recipeId: recipeId, userId: userId, userName: userName, content: content);
+    await notificationRepo.createCommentNotification(
+      receiverId: recipeOwnerId,
+      fromUserId: userId,
+      recipeId: recipeId,
+      fromUserName: userName,
+    );
   }
 
   void changeSort(CommentSortType type) {
@@ -176,6 +188,21 @@ class RecipeDetailController extends GetxController {
     if (snap.exists) {
       hasRated.value = true;
       userRating.value = (snap['rating'] as num).toDouble();
+    }
+  }
+
+  Future<void> togglePublishedRecipe(String recipeId) async {
+    try {
+      final docRef = FirebaseFirestore.instance.collection("recipes").doc(recipeId);
+      final snapshot = await docRef.get();
+
+      if (snapshot.exists) {
+        final current = snapshot['isShared'] as bool;
+        await docRef.update({'isShared': !current});
+        isShared.value = !current;
+      }
+    } catch (e) {
+      Logger().d('$e');
     }
   }
 

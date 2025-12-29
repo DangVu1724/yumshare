@@ -5,7 +5,6 @@ import 'package:logger/logger.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 import 'package:yumshare/features/discover/controllers/discover_controller.dart';
 import 'package:yumshare/features/home/controllers/home_controller.dart';
-import 'package:yumshare/features/recipe/create_recipe/controllers/create_recipe_controller.dart';
 import 'package:yumshare/features/recipe/recipe_detail/controllers/recipe_detail_controller.dart';
 import 'package:yumshare/features/recipe/recipe_detail/dialogs/recipe_info_dialog.dart';
 import 'package:yumshare/features/recipe/recipe_detail/dialogs/share_bottom_sheet.dart';
@@ -36,7 +35,6 @@ class RecipeDetailPage extends StatefulWidget {
 class _RecipeDetailPageState extends State<RecipeDetailPage> {
   final DiscoverController discoverController = Get.find<DiscoverController>();
   final HomeController homeController = Get.find<HomeController>();
-  final CreateRecipeController createRecipeController = Get.find<CreateRecipeController>();
   final RecipeDetailController recipeDetailController = Get.find<RecipeDetailController>();
 
   bool isCollapsed = false;
@@ -135,7 +133,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                         color: isPublished ? AppColors.primary : (isCollapsed ? Colors.black : Colors.white),
                       ),
                       onPressed: () async {
-                        await createRecipeController.togglePublishedRecipe(widget.recipe.id);
+                        await recipeDetailController.togglePublishedRecipe(widget.recipe.id);
                         homeController.togglePublished(widget.recipe.id);
                       },
                     );
@@ -246,7 +244,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
                       PublishedStatus(
                         recipeId: widget.recipe.id,
                         homeController: homeController,
-                        createRecipeController: createRecipeController,
+                        recipeDetailController: recipeDetailController,
                       ),
                     ],
 

@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:yumshare/bindings/home_binding.dart';
 import 'package:yumshare/features/home/pages/home_page.dart';
 import 'package:yumshare/features/home/pages/favourite_page.dart';
+import 'package:yumshare/features/home/pages/notification_page.dart';
 import 'package:yumshare/routers/app_routes.dart';
 
 class HomeRoutes {
@@ -14,6 +15,10 @@ class HomeRoutes {
     GetPage(
       name: Routes.favourite,
       page: () => const FavouritePage(),
+    ),
+    GetPage(
+      name: Routes.noti,
+      page: () => const NotificationPage(),
     ),
   ];
 }

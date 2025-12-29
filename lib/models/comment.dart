@@ -26,13 +26,15 @@ class Comment {
   }) : likedBy = likedBy ?? [];
 
   factory Comment.fromMap(Map<String, dynamic> map, String id) {
+    final createdAtTimestamp = map['createdAt'];
+
     return Comment(
       id: id,
       recipeId: map['recipeId'],
       userId: map['userId'],
       content: map['content'],
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
-      updatedAt: map['updatedAt'] != null ? (map['updatedAt'] as Timestamp).toDate() : null,
+      createdAt: createdAtTimestamp is Timestamp ? createdAtTimestamp.toDate() : DateTime.now(),
+      updatedAt: map['updatedAt'] is Timestamp ? (map['updatedAt'] as Timestamp).toDate() : null,
       parentId: map['parentId'],
       likesCount: map['likesCount'] ?? 0,
       userName: map['userName'],

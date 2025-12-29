@@ -73,7 +73,7 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
 
               createRecipeController.selectedRegion = null;
               createRecipeController.selectedCategory = null;
-              createRecipeController.image.value = null; 
+              createRecipeController.image.value = null;
 
               ing.update();
               step.update();

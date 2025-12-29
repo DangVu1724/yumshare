@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yumshare/features/home/controllers/home_controller.dart';
-import 'package:yumshare/features/recipe/create_recipe/controllers/create_recipe_controller.dart';
+import 'package:yumshare/features/recipe/recipe_detail/controllers/recipe_detail_controller.dart';
 import 'package:yumshare/utils/themes/app_colors.dart';
 
 class PublishedStatus extends StatelessWidget {
   final String recipeId;
   final HomeController homeController;
-  final CreateRecipeController createRecipeController;
+  final RecipeDetailController recipeDetailController;
 
   const PublishedStatus({
     super.key,
     required this.recipeId,
     required this.homeController,
-    required this.createRecipeController,
+    required this.recipeDetailController,
   });
 
   @override
@@ -44,7 +44,7 @@ class PublishedStatus extends StatelessWidget {
             ),
             TextButton(
               onPressed: () async {
-                await createRecipeController.togglePublishedRecipe(recipeId);
+                await recipeDetailController.togglePublishedRecipe(recipeId);
                 homeController.togglePublished(recipeId);
               },
               child: Text(isPublished ? 'Make Private' : 'Publish',

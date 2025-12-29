@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:yumshare/bindings/create_recipe_binding..dart';
 import 'package:yumshare/bindings/discorver_binding.dart';
 import 'package:yumshare/bindings/home_binding.dart';
 import 'package:yumshare/bindings/recipe_binding.dart';
@@ -15,12 +16,12 @@ class RecipeRoutes {
   static final routes = [
     GetPage(name: Routes.myRecipe, page: () => const MyRecipePage()),
 
-    GetPage(name: Routes.createRecipe, page: () => const CreateRecipePage(), binding: RecipeBinding()),
+    GetPage(name: Routes.createRecipe, page: () => const CreateRecipePage(), bindings: [CreateRecipeBinding()]),
     GetPage(
       name: Routes.comments,
       page: () {
-        final recipeId = Get.arguments as String;
-        return CommentsPage(recipeId: recipeId);
+        final recipe = Get.arguments as Recipe;
+        return CommentsPage(recipe: recipe);
       },
       binding: RecipeBinding(),
     ),
@@ -33,7 +34,7 @@ class RecipeRoutes {
         final user = args["user"] as Users;
         return RecipeDetailPage(recipe: recipe, user: user);
       },
-      bindings: [HomeBinding(), DiscorverBinding(), RecipeBinding(), RecipeBinding()],
+      bindings: [HomeBinding(), DiscorverBinding(), RecipeBinding()],
     ),
     GetPage(
       name: Routes.editRecipe,

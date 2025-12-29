@@ -13,12 +13,14 @@ import 'package:yumshare/features/home/controllers/home_controller.dart';
 import 'package:yumshare/models/ingredients.dart';
 import 'package:yumshare/models/recipes.dart';
 import 'package:yumshare/models/recipte_step.dart';
+import 'package:yumshare/repository/notification_repo.dart';
 import 'package:yumshare/repository/recipe_repository.dart';
 
 class CreateRecipeController extends GetxController {
   final RecipeRepository repo = RecipeRepository();
   final HomeController homeController = Get.find<HomeController>();
   final DiscoverController discoverController = Get.find<DiscoverController>();
+  final NotificationRepo notificationRepo = NotificationRepo();
   final auth = AuthService();
 
   // Chỉ một region
@@ -28,7 +30,6 @@ class CreateRecipeController extends GetxController {
   final ImagePicker _picker = ImagePicker();
   final Rxn<dynamic> image = Rxn<dynamic>();
   var isUpdating = false.obs;
-  var isShared = false.obs;
 
   // Regions – chỉ chọn 1
   final List<String> regions = [
@@ -111,20 +112,6 @@ class CreateRecipeController extends GetxController {
     return null;
   }
 
-  Future<void> togglePublishedRecipe(String recipeId) async {
-    try {
-      final docRef = FirebaseFirestore.instance.collection("recipes").doc(recipeId);
-      final snapshot = await docRef.get();
-
-      if (snapshot.exists) {
-        final current = snapshot['isShared'] as bool;
-        await docRef.update({'isShared': !current});
-        isShared.value = !current;
-      }
-    } catch (e) {
-      Logger().d('$e');
-    }
-  }
 
   Future<void> createRecipe({
     required String name,
@@ -155,10 +142,15 @@ class CreateRecipeController extends GetxController {
     );
 
     await repo.creatRecipe(recipe);
+    await notificationRepo.createNewRecipeNotification(
+      fromUserId: auth.currentUser!.uid,
+      fromUserName: auth.currentUser!.displayName ?? 'Someone',
+      receiverId: '',
+      recipeId: recipe.id,
+    );
     await homeController.loadMyRecipes();
     await discoverController.fetchAllRecipes();
   }
-
   Future<void> updateRecipe(
     String id, {
     String? name,

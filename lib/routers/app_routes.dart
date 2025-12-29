@@ -5,6 +5,7 @@ class Routes {
   // Home
   static const home = '/home';
   static const favourite = '/fav';
+  static const noti = '/noti';
 
   // Auth
   static const login = '/login';

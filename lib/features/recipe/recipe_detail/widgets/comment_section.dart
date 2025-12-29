@@ -73,7 +73,7 @@ class BuildComment extends StatelessWidget {
               Expanded(
                 child: GestureDetector(
                   onTap: () {
-                    Get.toNamed(Routes.comments, arguments: widget.recipe.id);
+                    Get.toNamed(Routes.comments, arguments: widget.recipe);
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),

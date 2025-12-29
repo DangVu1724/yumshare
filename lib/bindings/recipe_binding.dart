@@ -5,7 +5,6 @@ import 'package:yumshare/features/recipe/recipe_detail/controllers/recipe_detail
 class RecipeBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => CreateRecipeController());
     Get.lazyPut(() => RecipeDetailController());
   }
 }

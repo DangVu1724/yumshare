@@ -5,13 +5,14 @@ import 'package:yumshare/features/auth/services/auth_service.dart';
 import 'package:yumshare/features/profile/controllers/profile_controller.dart';
 import 'package:yumshare/features/recipe/recipe_detail/controllers/recipe_detail_controller.dart';
 import 'package:yumshare/features/recipe/recipe_detail/widgets/comment_item.dart';
-import 'package:yumshare/models/comment_sort_type.dart';
+import 'package:yumshare/models/enums/comment_sort_type.dart';
+import 'package:yumshare/models/recipes.dart';
 import 'package:yumshare/utils/themes/app_colors.dart';
 
 class CommentsPage extends StatefulWidget {
-  final String recipeId;
+  final Recipe recipe;
 
-  const CommentsPage({super.key, required this.recipeId});
+  const CommentsPage({super.key, required this.recipe});
 
   @override
   State<CommentsPage> createState() => _CommentsPageState();
@@ -78,7 +79,7 @@ class _CommentsPageState extends State<CommentsPage> {
                 separatorBuilder: (_, _) => const SizedBox(height: 12),
                 itemBuilder: (_, index) {
                   final comment = recipeDetailController.comments[index];
-                  return CommentItem(comment: comment,controler: recipeDetailController,);
+                  return CommentItem(comment: comment, controler: recipeDetailController);
                 },
               );
             }),
@@ -147,10 +148,11 @@ class _CommentsPageState extends State<CommentsPage> {
                         if (text.isEmpty) return;
 
                         recipeDetailController.addComment(
-                          recipeId: widget.recipeId,
+                          recipeId: widget.recipe.id,
                           userId: auth.currentUser!.uid,
                           userName: profileController.userData.value!.name,
                           content: text,
+                          recipeOwnerId: widget.recipe.authorId,
                         );
 
                         _commentController.clear();

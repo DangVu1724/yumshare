@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yumshare/features/discover/controllers/discover_controller.dart';
 import 'package:yumshare/features/home/controllers/home_controller.dart';
+import 'package:yumshare/models/country.dart';
 import 'package:yumshare/routers/app_routes.dart';
 import 'package:yumshare/utils/themes/app_colors.dart';
 import 'package:yumshare/utils/themes/text_style.dart';
@@ -126,7 +127,7 @@ Widget _buildSectionArea(DiscoverController controller) {
       itemBuilder: (context, index) {
         final area = controller.countries[index];
         final count = controller.getAreaCount(area.adjective);
-        return _areaCard(title: area.name, image: area.flag, count: count);
+        return _areaCard(area: area, image: area.flag, count: count);
       },
     ),
   );
@@ -272,12 +273,12 @@ Widget _categoryCard({required String title, required String image, required int
   );
 }
 
-Widget _areaCard({required String title, required String image, required int count}) {
+Widget _areaCard({required Country area, required String image, required int count}) {
   return SizedBox(
     width: 200,
     child: GestureDetector(
       onTap: () {
-        Get.toNamed(Routes.recipesByAreaPage, arguments: title);
+        Get.toNamed(Routes.recipesByAreaPage, arguments: area.adjective);
       },
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
@@ -310,7 +311,7 @@ Widget _areaCard({required String title, required String image, required int cou
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    area.name,
                     style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                   Text(

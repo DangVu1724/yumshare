@@ -115,10 +115,16 @@ class DiscoverController extends GetxController {
 
   void _getNewRecipes(List<Recipe> recipes) {
     final sevenDaysAgo = DateTime.now().subtract(const Duration(days: 7));
-    final newRecipe = recipes.where((recipe) {
-      return recipe.createdAt.isAfter(sevenDaysAgo);
-    }).toList();
-    newRecipes.value = newRecipe;
+
+    final newRecipe = recipes.where((recipe) => recipe.createdAt.isAfter(sevenDaysAgo)).toList();
+
+    if (newRecipe.isEmpty) {
+      // fallback: lấy 5 recipe mới nhất (dù cũ hơn 7 ngày)
+      recipes.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+      newRecipes.value = recipes.take(10).toList();
+    } else {
+      newRecipes.value = newRecipe;
+    }
   }
 
   int getCategoryCount(String category) {

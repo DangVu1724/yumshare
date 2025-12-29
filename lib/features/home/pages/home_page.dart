@@ -21,12 +21,12 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('YumShare',style: AppTextStyles.heading2.copyWith(color: AppColors.primary),),
+        title: Text('YumShare', style: AppTextStyles.heading2.copyWith(color: AppColors.primary)),
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications),
             onPressed: () {
-              // Navigate to settings page
+              Get.toNamed(Routes.noti);
             },
           ),
 
