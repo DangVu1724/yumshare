@@ -8,6 +8,7 @@ import 'package:yumshare/features/home/controllers/home_controller.dart';
 import 'package:yumshare/features/recipe/recipe_detail/controllers/recipe_detail_controller.dart';
 import 'package:yumshare/features/recipe/recipe_detail/dialogs/recipe_info_dialog.dart';
 import 'package:yumshare/features/recipe/recipe_detail/dialogs/share_bottom_sheet.dart';
+import 'package:yumshare/features/recipe/recipe_detail/pages/step_page.dart';
 import 'package:yumshare/features/recipe/recipe_detail/widgets/comment_section.dart';
 import 'package:yumshare/features/recipe/recipe_detail/widgets/rating_like_section.dart';
 import 'package:yumshare/features/recipe/recipe_detail/widgets/published_status.dart';
@@ -263,7 +264,18 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
 
                     const SizedBox(height: 24),
 
-                    const Text("Instructions:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Instructions:", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                        IconButton(
+                          icon: const Icon(Icons.restaurant_menu),
+                          onPressed: () {
+                            Get.to(() => CookingModePage(steps: widget.recipe.steps, recipeName: widget.recipe.name));
+                          },
+                        ),
+                      ],
+                    ),
 
                     ListView.separated(
                       shrinkWrap: true,

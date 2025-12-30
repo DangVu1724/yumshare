@@ -41,11 +41,11 @@ class RecipeRepository {
 
       allRecipes.addAll(snapshot.docs.map((doc) => Recipe.fromMap(doc.data())));
     }
-    // allRecipes.sort((a, b) {
-    //   final aTime = a.createdAt;
-    //   final bTime = b.createdAt;
-    //   return bTime.compareTo(aTime);
-    // });
+    allRecipes.sort((a, b) {
+      final aTime = a.createdAt;
+      final bTime = b.createdAt;
+      return bTime.compareTo(aTime);
+    });
 
     return allRecipes;
   }

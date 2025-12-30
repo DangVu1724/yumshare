@@ -9,15 +9,16 @@ class RecipeSection extends StatelessWidget {
   final String title;
   final List<Recipe> recipes;
   final Map<String, Users> authors;
+  final String route;
 
-  const RecipeSection({super.key, required this.title, required this.recipes, required this.authors});
+  const RecipeSection({super.key, required this.title, required this.recipes, required this.authors, required this.route});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildTitle(title),
+        _buildTitle(title, route),
         const SizedBox(height: 10),
         SizedBox(
           height: 240,
@@ -40,12 +41,17 @@ class RecipeSection extends StatelessWidget {
   }
 }
 
-Widget _buildTitle(String title) {
+Widget _buildTitle(String title, String route) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
       Text(title, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-      Icon(Icons.arrow_forward, size: 20, color: AppColors.primary),
+      IconButton(
+        onPressed: () {
+          Get.toNamed(route);
+        },
+        icon: Icon(Icons.arrow_forward, size: 20, color: AppColors.primary),
+      ),
     ],
   );
 }

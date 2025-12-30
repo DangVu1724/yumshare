@@ -7,6 +7,7 @@ import 'package:yumshare/features/recipe/recipe_detail/pages/comments_page.dart'
 import 'package:yumshare/features/recipe/recipe_detail/pages/recipe_detail.dart';
 import 'package:yumshare/features/recipe/create_recipe/create_recipe_page.dart';
 import 'package:yumshare/features/myrecipe/pages/my_recipe_page.dart';
+import 'package:yumshare/features/recipe/recipe_detail/pages/step_page.dart';
 import 'package:yumshare/features/recipe/recipe_edit/pages/edit_recipe_page.dart';
 import 'package:yumshare/models/recipes.dart';
 import 'package:yumshare/models/users.dart';
@@ -33,6 +34,15 @@ class RecipeRoutes {
         final recipe = args["recipe"] as Recipe;
         final user = args["user"] as Users;
         return RecipeDetailPage(recipe: recipe, user: user);
+      },
+      bindings: [HomeBinding(), DiscorverBinding(), RecipeBinding()],
+    ),
+    GetPage(
+      name: Routes.steps,
+      page: () {
+        final steps = Get.arguments as List<String>;
+        final recipeName = Get.arguments as String;
+        return CookingModePage(steps: steps, recipeName: recipeName);
       },
       bindings: [HomeBinding(), DiscorverBinding(), RecipeBinding()],
     ),

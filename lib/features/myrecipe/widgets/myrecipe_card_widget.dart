@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:yumshare/features/home/controllers/home_controller.dart';
 
 import 'package:yumshare/models/recipes.dart';
 import 'package:yumshare/models/users.dart';
@@ -9,8 +10,9 @@ import 'package:yumshare/utils/themes/app_colors.dart';
 class MyrecipeCardWidget extends StatelessWidget {
   final Recipe recipe;
   final Users author;
+  final HomeController homeController;
 
-  const MyrecipeCardWidget({super.key, required this.recipe, required this.author});
+  const MyrecipeCardWidget({super.key, required this.recipe, required this.author, required this.homeController});
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +34,7 @@ class MyrecipeCardWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     image: DecorationImage(
-                      image: recipe.imageUrl != null && recipe.imageUrl!.isNotEmpty
-                          ? NetworkImage(recipe.imageUrl!)
-                          : const AssetImage('assets/images/images.jpg') as ImageProvider,
+                      image: homeController.buildImageProvider(recipe.imageUrl),
                       fit: BoxFit.cover,
                     ),
                   ),

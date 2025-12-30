@@ -114,6 +114,7 @@ class _HomePageState extends State<HomePage> {
                       title: "My Recipes",
                       recipes: _homeController.myRecipes,
                       authors: _homeController.authors,
+                      route: Routes.myRecipe,
                     ),
                   );
                 }
@@ -124,6 +125,7 @@ class _HomePageState extends State<HomePage> {
                       title: "Bookmark Recipes",
                       recipes: _homeController.favoriteRecipes,
                       authors: _homeController.authors,
+                      route: Routes.favourite,
                     ),
                   );
                 }

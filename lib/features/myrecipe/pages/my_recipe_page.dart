@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yumshare/features/home/controllers/home_controller.dart';
 import 'package:yumshare/features/myrecipe/widgets/myrecipe_card_widget.dart';
+import 'package:yumshare/home.dart';
 import 'package:yumshare/models/recipes.dart';
 import 'package:yumshare/models/users.dart';
 import 'package:yumshare/utils/themes/app_colors.dart';
@@ -61,8 +62,8 @@ class _MyRecipePageState extends State<MyRecipePage> {
         ),
         body: TabBarView(
           children: [
-            _buildListRecipe(_homeController.myRecipes, _homeController.authors),
-            _buildListRecipe(_homeController.publishRecipes, _homeController.authors),
+            _buildListRecipe(_homeController.myRecipes, _homeController.authors, _homeController),
+            _buildListRecipe(_homeController.publishRecipes, _homeController.authors, _homeController),
           ],
         ),
       ),
@@ -70,7 +71,7 @@ class _MyRecipePageState extends State<MyRecipePage> {
   }
 }
 
-Widget _buildListRecipe(List<Recipe> myRecipes, Map<String, Users> authors) {
+Widget _buildListRecipe(List<Recipe> myRecipes, Map<String, Users> authors, HomeController? homeController) {
   return Obx(() {
     return GridView.builder(
       padding: const EdgeInsets.all(12),
@@ -83,7 +84,7 @@ Widget _buildListRecipe(List<Recipe> myRecipes, Map<String, Users> authors) {
       itemBuilder: (context, index) {
         final recipe = myRecipes[index];
         final author = authors[recipe.authorId];
-        return MyrecipeCardWidget(recipe: recipe, author: author!);
+        return MyrecipeCardWidget(recipe: recipe, author: author!, homeController: homeController!);
       },
 
       itemCount: myRecipes.length,
