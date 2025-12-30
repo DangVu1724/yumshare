@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:yumshare/features/home/controllers/home_controller.dart';
+import 'package:yumshare/features/home/controllers/noti_controller.dart';
 import 'package:yumshare/features/home/widgets/recipe_section.dart';
 import 'package:yumshare/routers/app_routes.dart';
 import 'package:yumshare/utils/themes/app_colors.dart';
@@ -16,6 +17,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final HomeController _homeController = Get.find<HomeController>();
+  final NotiController _notiController = Get.find<NotiController>();
 
   @override
   Widget build(BuildContext context) {
@@ -23,13 +25,36 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('YumShare', style: AppTextStyles.heading2.copyWith(color: AppColors.primary)),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            onPressed: () {
-              Get.toNamed(Routes.noti);
-            },
+          Stack(
+            children: [
+              IconButton(
+                icon: const Icon(Icons.notifications_none_outlined),
+                onPressed: () {
+                  Get.toNamed(Routes.noti);
+                },
+              ),
+              Obx(() {
+                if (_notiController.unreadCount.value > 0) {
+                  return Positioned(
+                    right: 8,
+                    top: 8,
+                    child: Container(
+                      width: 16,
+                      height: 16,
+                      decoration: BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                      child: Center(
+                        child: Text(
+                          '${_notiController.unreadCount.value}',
+                          style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                return Container();
+              }),
+            ],
           ),
-
           IconButton(
             icon: const Icon(Icons.bookmark),
             onPressed: () {

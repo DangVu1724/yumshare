@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:yumshare/features/auth/services/auth_service.dart';
 import 'package:yumshare/models/notifications.dart';
@@ -10,6 +11,7 @@ class NotiController extends GetxController {
   final AuthService auth = AuthService();
 
   final notifications = <Notifications>[].obs;
+  final unreadCount = 0.obs;
 
   StreamSubscription<List<Notifications>>? _subscription;
 
@@ -22,6 +24,25 @@ class NotiController extends GetxController {
 
     _subscription = _notificationRepository.streamNotifications(userId).listen((data) {
       notifications.value = data;
+      unreadCount.value = data.where((noti) => !noti.isRead).length;
+    });
+
+    ever<List<Notifications>>(notifications, (list) {
+      final unread = list.where((n) => !n.isRead).toList();
+
+      if (unread.isNotEmpty) {
+        final latest = unread.first;
+
+        Get.snackbar(
+          latest.title,
+          latest.message,
+          snackPosition: SnackPosition.TOP,
+          duration: Duration(seconds: 3),
+          backgroundColor: Colors.black87,
+          colorText: Colors.white,
+          margin: EdgeInsets.all(12),
+        );
+      }
     });
   }
 

@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:yumshare/features/auth/services/auth_service.dart';
+import 'package:yumshare/features/profile/controllers/profile_controller.dart';
 import 'package:yumshare/models/comment.dart';
 import 'package:yumshare/models/enums/comment_sort_type.dart';
 import 'package:yumshare/repository/comment_repo.dart';
@@ -15,6 +15,7 @@ class RecipeDetailController extends GetxController {
   final CommentRepo commentRepo = CommentRepo();
   final RecipeRepository recipeRepo = RecipeRepository();
   final NotificationRepo notificationRepo = NotificationRepo();
+  final ProfileController profileController = Get.find<ProfileController>();
 
   // COMMENTS
   List<Comment> rawComments = [];
@@ -138,7 +139,11 @@ class RecipeDetailController extends GetxController {
     return recipeLikes.value;
   }
 
-  Future<void> toggleLike({required String recipeId, required String currentUserId}) async {
+  Future<void> toggleLike({
+    required String recipeId,
+    required String currentUserId,
+    required String recipeOwnerId,
+  }) async {
     final isLikedNow = likedBy.contains(currentUserId);
 
     if (isLikedNow) {
@@ -152,6 +157,14 @@ class RecipeDetailController extends GetxController {
 
     try {
       await recipeRepo.toggleLike(recipeId: recipeId, userId: currentUserId, isLiked: isLikedNow);
+      if (!isLikedNow) {
+        notificationRepo.createLikeNotification(
+          receiverId: recipeOwnerId,
+          fromUserId: currentUserId,
+          recipeId: recipeId,
+          fromUserName: profileController.userData.value!.name,
+        );
+      }
     } catch (_) {
       if (isLikedNow) {
         likedBy.add(currentUserId);

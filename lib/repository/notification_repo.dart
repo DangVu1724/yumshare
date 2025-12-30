@@ -52,12 +52,6 @@ class NotificationRepo {
     }, SetOptions(merge: true));
   }
 
-  /// UNLIKE → xoá notification
-  Future<void> deleteLikeNotification({required String recipeId, required String fromUserId}) async {
-    final docId = 'like_${recipeId}_$fromUserId';
-    await _ref.doc(docId).delete();
-  }
-
   /// COMMENT → mỗi comment = 1 notification mới
   Future<void> createCommentNotification({
     required String receiverId,
@@ -80,24 +74,32 @@ class NotificationRepo {
   }
 
   /// CREATE RECIPE → gửi cho follower
-  Future<void> createNewRecipeNotification({
-    required String receiverId,
+  Future<void> createNewRecipeNotifications({
+    required List<String> receiverIds, // followers
     required String fromUserId,
     required String recipeId,
     required String fromUserName,
   }) async {
-    if (receiverId == fromUserId) return;
+    final batch = FirebaseFirestore.instance.batch();
 
-    await _ref.add({
-      'userId': receiverId,
-      'fromUserId': fromUserId,
-      'type': NotificationType.createRecipe.name,
-      'title': 'New recipe',
-      'message': '$fromUserName shared a new recipe.',
-      'refId': recipeId,
-      'isRead': false,
-      'createdAt': FieldValue.serverTimestamp(),
-    });
+    for (final receiverId in receiverIds) {
+      if (receiverId == fromUserId) continue;
+
+      final docRef = _ref.doc(); 
+
+      batch.set(docRef, {
+        'userId': receiverId,
+        'fromUserId': fromUserId,
+        'type': NotificationType.createRecipe.name,
+        'title': 'New recipe',
+        'message': '$fromUserName shared a new recipe.',
+        'refId': recipeId,
+        'isRead': false,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    }
+
+    await batch.commit();
   }
 
   /// FOLLOW → chỉ 1 notification duy nhất

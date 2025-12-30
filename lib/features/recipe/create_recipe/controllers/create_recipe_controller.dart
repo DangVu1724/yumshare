@@ -1,7 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -10,6 +8,7 @@ import 'package:uuid/uuid.dart';
 import 'package:yumshare/features/auth/services/auth_service.dart';
 import 'package:yumshare/features/discover/controllers/discover_controller.dart';
 import 'package:yumshare/features/home/controllers/home_controller.dart';
+import 'package:yumshare/features/profile/controllers/profile_controller.dart';
 import 'package:yumshare/models/ingredients.dart';
 import 'package:yumshare/models/recipes.dart';
 import 'package:yumshare/models/recipte_step.dart';
@@ -21,6 +20,7 @@ class CreateRecipeController extends GetxController {
   final HomeController homeController = Get.find<HomeController>();
   final DiscoverController discoverController = Get.find<DiscoverController>();
   final NotificationRepo notificationRepo = NotificationRepo();
+  final ProfileController profileController = Get.find<ProfileController>();
   final auth = AuthService();
 
   // Chỉ một region
@@ -112,7 +112,6 @@ class CreateRecipeController extends GetxController {
     return null;
   }
 
-
   Future<void> createRecipe({
     required String name,
     required String description,
@@ -142,15 +141,16 @@ class CreateRecipeController extends GetxController {
     );
 
     await repo.creatRecipe(recipe);
-    await notificationRepo.createNewRecipeNotification(
+    await notificationRepo.createNewRecipeNotifications(
+      receiverIds: profileController.userData.value!.followers,
       fromUserId: auth.currentUser!.uid,
-      fromUserName: auth.currentUser!.displayName ?? 'Someone',
-      receiverId: '',
       recipeId: recipe.id,
+      fromUserName: profileController.userData.value!.name,
     );
     await homeController.loadMyRecipes();
     await discoverController.fetchAllRecipes();
   }
+
   Future<void> updateRecipe(
     String id, {
     String? name,

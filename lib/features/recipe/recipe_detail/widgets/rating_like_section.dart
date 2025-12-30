@@ -39,11 +39,7 @@ class RatingLikeSection extends StatelessWidget {
                 children: [
                   Text(
                     'Recipe Rating',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey.shade800,
-                      fontWeight: FontWeight.w600,
-                    ),
+                    style: TextStyle(fontSize: 16, color: Colors.grey.shade800, fontWeight: FontWeight.w600),
                   ),
                   const SizedBox(height: 4),
                   Row(
@@ -53,9 +49,9 @@ class RatingLikeSection extends StatelessWidget {
                         final hasRated = controller.hasRated.value;
                         final currentRating = hasRated
                             ? ((recipe.rating * recipe.ratingCount + controller.userRating.value) /
-                                (recipe.ratingCount + 1))
+                                  (recipe.ratingCount + 1))
                             : recipe.rating;
-                        
+
                         return Row(
                           children: [
                             Text(
@@ -67,11 +63,7 @@ class RatingLikeSection extends StatelessWidget {
                               ),
                             ),
                             const SizedBox(width: 4),
-                            Icon(
-                              Icons.star_rounded,
-                              color: Colors.amber.shade500,
-                              size: 24,
-                            ),
+                            Icon(Icons.star_rounded, color: Colors.amber.shade500, size: 24),
                           ],
                         );
                       }),
@@ -79,23 +71,18 @@ class RatingLikeSection extends StatelessWidget {
                       // Hiển thị số lượt đánh giá
                       Obx(() {
                         final hasRated = controller.hasRated.value;
-                        final ratingCount = hasRated
-                            ? recipe.ratingCount + 1
-                            : recipe.ratingCount;
-                        
+                        final ratingCount = hasRated ? recipe.ratingCount + 1 : recipe.ratingCount;
+
                         return Text(
                           '($ratingCount ${ratingCount == 1 ? 'review' : 'reviews'})',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade600,
-                          ),
+                          style: TextStyle(fontSize: 14, color: Colors.grey.shade600),
                         );
                       }),
                     ],
                   ),
                 ],
               ),
-              
+
               // Like section ở góc phải
               Obx(() {
                 final userId = discoverController.userId!;
@@ -103,15 +90,14 @@ class RatingLikeSection extends StatelessWidget {
                 final likeCount = controller.recipeLikes.value;
 
                 return GestureDetector(
-                  onTap: () => controller.toggleLike(recipeId: recipe.id, currentUserId: userId),
+                  onTap: () =>
+                      controller.toggleLike(recipeId: recipe.id, currentUserId: userId, recipeOwnerId: recipe.authorId),
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                     decoration: BoxDecoration(
                       color: isLiked ? Colors.red.shade50 : Colors.grey.shade100,
                       borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: isLiked ? Colors.red.shade200 : Colors.grey.shade200,
-                      ),
+                      border: Border.all(color: isLiked ? Colors.red.shade200 : Colors.grey.shade200),
                     ),
                     child: Column(
                       children: [
@@ -151,19 +137,13 @@ class RatingLikeSection extends StatelessWidget {
             children: [
               Text(
                 'Did you enjoy this recipe?',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade700,
-                  fontWeight: FontWeight.w500,
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade700, fontWeight: FontWeight.w500),
               ),
               const SizedBox(height: 16),
 
               Obx(() {
                 final hasRated = controller.hasRated.value;
-                final currentRating = hasRated
-                    ? controller.userRating.value
-                    : recipe.rating;
+                final currentRating = hasRated ? controller.userRating.value : recipe.rating;
 
                 return Column(
                   children: [
@@ -190,11 +170,7 @@ class RatingLikeSection extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: hasRated ? Colors.green.shade50 : Colors.blue.shade50,
                         borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color: hasRated
-                              ? Colors.green.shade200
-                              : Colors.blue.shade200,
-                        ),
+                        border: Border.all(color: hasRated ? Colors.green.shade200 : Colors.blue.shade200),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -211,9 +187,7 @@ class RatingLikeSection extends StatelessWidget {
                                 : 'Tap stars to rate this recipe',
                             style: TextStyle(
                               fontSize: 13,
-                              color: hasRated
-                                  ? Colors.green.shade800
-                                  : Colors.blue.shade800,
+                              color: hasRated ? Colors.green.shade800 : Colors.blue.shade800,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
@@ -232,17 +206,12 @@ class RatingLikeSection extends StatelessWidget {
                             onPressed: controller.isSubmittingRating.value
                                 ? null
                                 : () {
-                                    controller.submitRating(
-                                      recipeId: recipe.id,
-                                      rating: controller.userRating.value,
-                                    );
+                                    controller.submitRating(recipeId: recipe.id, rating: controller.userRating.value);
                                   },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: AppColors.primary,
                               foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                               padding: const EdgeInsets.symmetric(vertical: 14),
                               elevation: 0,
                             ),
@@ -250,10 +219,7 @@ class RatingLikeSection extends StatelessWidget {
                                 ? const SizedBox(
                                     width: 20,
                                     height: 20,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      color: Colors.white,
-                                    ),
+                                    child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                                   )
                                 : const Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -262,10 +228,7 @@ class RatingLikeSection extends StatelessWidget {
                                       SizedBox(width: 8),
                                       Text(
                                         'Submit Rating',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
                                       ),
                                     ],
                                   ),

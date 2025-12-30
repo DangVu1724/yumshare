@@ -1,7 +1,9 @@
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:yumshare/features/auth/services/auth_service.dart';
+import 'package:yumshare/features/profile/controllers/profile_controller.dart';
 import 'package:yumshare/models/recipes.dart';
+import 'package:yumshare/repository/notification_repo.dart';
 import 'package:yumshare/repository/recipe_repository.dart';
 import 'package:yumshare/repository/user_repository.dart';
 
@@ -15,7 +17,9 @@ class ChefProfileController extends GetxController {
   final logger = Logger();
   final repo = RecipeRepository();
   final userRepo = UserRepository();
+  final notiRepo = NotificationRepo();
   final auth = AuthService();
+  final ProfileController self = Get.find<ProfileController>();
 
   @override
   void onInit() {
@@ -48,6 +52,11 @@ class ChefProfileController extends GetxController {
   Future<void> followUser(String chefId) async {
     try {
       await userRepo.followUser(chefId);
+      await notiRepo.createFollowNotification(
+        receiverId: chefId,
+        fromUserId: auth.currentUser!.uid,
+        fromUserName: self.userData.value!.name,
+      );
     } catch (e) {
       logger.e("Error following user: $e");
       rethrow;

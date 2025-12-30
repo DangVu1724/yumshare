@@ -302,6 +302,7 @@ class _RecipeDetailPageState extends State<RecipeDetailPage> {
           recipeDetailController: recipeDetailController,
           recipeId: widget.recipe.id,
           userId: discoverController.userId!,
+          authorId: widget.recipe.authorId,
         ),
       ),
     );

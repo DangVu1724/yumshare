@@ -24,6 +24,7 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
   final ing = Get.put(IngredientController());
   final step = Get.put(StepController());
   final CreateRecipeController createRecipeController = Get.find<CreateRecipeController>();
+  
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +63,8 @@ class _CreateRecipePageState extends State<CreateRecipePage> {
                 people: people,
                 imageUrl: base64Image,
               );
+
+
 
               _nameController.clear();
               _descriptionController.clear();

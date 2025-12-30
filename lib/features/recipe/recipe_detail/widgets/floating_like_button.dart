@@ -6,12 +6,14 @@ class FloatingLikeButton extends StatelessWidget {
   final RecipeDetailController recipeDetailController;
   final String recipeId;
   final String userId;
+  final String authorId;
 
   const FloatingLikeButton({
     super.key,
     required this.recipeDetailController,
     required this.recipeId,
     required this.userId,
+    required this.authorId,
   });
 
   @override
@@ -19,7 +21,8 @@ class FloatingLikeButton extends StatelessWidget {
     return Obx(() {
       final isLiked = recipeDetailController.isLiked(recipeId);
       return FloatingActionButton(
-        onPressed: () => recipeDetailController.toggleLike(recipeId: recipeId, currentUserId: userId),
+        onPressed: () =>
+            recipeDetailController.toggleLike(recipeId: recipeId, currentUserId: userId, recipeOwnerId: authorId),
         backgroundColor: isLiked ? Colors.red.shade500 : Colors.white,
         shape: const CircleBorder(),
         elevation: 4,

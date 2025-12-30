@@ -121,7 +121,7 @@ class DiscoverController extends GetxController {
     if (newRecipe.isEmpty) {
       // fallback: lấy 5 recipe mới nhất (dù cũ hơn 7 ngày)
       recipes.sort((a, b) => b.createdAt.compareTo(a.createdAt));
-      newRecipes.value = recipes.take(10).toList();
+      newRecipes.value = recipes.take(20).toList();
     } else {
       newRecipes.value = newRecipe;
     }
